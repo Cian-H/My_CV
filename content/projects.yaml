@@ -1,4 +1,74 @@
-- name: "Placeholder Project"
-  description: "A placeholder project description showcasing the architecture."
-  technologies: ["Rust", "TypeScript", "Deno"]
-  url: "https://github.com/placeholder"
+- name: "CSC1109: Data Speed and Scale"
+  description: "Single-handedly modernized an aging BSc Data Science module. Replaced legacy Vagrant/Hadoop environments with containerized Docker labs to eliminate dependency hell, completely rewrote course materials, and deployed a modern ReadTheDocs/MkDocs site for students."
+  technologies: ["Docker", "Python", "MkDocs", "Education"]
+  url: "https://github.com/CA4022/CSC1109-Data-Speed-and-Scale"
+
+- name: "Scanline Annotator"
+  description: "A high-performance library for annotating scanlines in a printing process raster."
+  technologies: ["Rust", "Image Processing", "High-Performance"]
+  url: "https://github.com/Cian-H/scanline_annotator"
+
+- name: "MTPy"
+  description: "Generates meltpool tomographs and layer maps from SLM printing pyrometry data."
+  technologies: ["Python", "Data Analysis", "Additive Manufacturing"]
+  url: "https://github.com/Cian-H/MTPy"
+
+- name: "Formerr"
+  description: "Formerr - the FORtran Monadic ERRor system. Brings modern functional error handling paradigms to an HPC classic."
+  technologies: ["Fortran", "Functional Programming", "PL Theory"]
+  url: "https://github.com/Cian-H/formerr"
+
+- name: "Tezca"
+  description: "An advanced library designed to selectively disable certain features of the Python programming language by manipulating language internals."
+  technologies: ["Python", "Metaprogramming"]
+  url: "https://github.com/Cian-H/Tezca"
+
+- name: "Trees From Scratch"
+  description: "Implemented core decision tree learning algorithms entirely from scratch in a functional programming paradigm."
+  technologies: ["Clojure", "Machine Learning", "Algorithms"]
+  url: "https://github.com/Cian-H/trees_from_scratch"
+
+- name: "I-Form Server Node Deployer"
+  description: "A tool for automatic deployment of servers for hosting research tools across the I-Form research centres."
+  technologies: ["Python", "DevOps", "Automation", "Docker"]
+  url: "https://github.com/Cian-H/I-Form_Server_Node_Deployer"
+
+- name: "OpenWebUI Blender Plugin"
+  description: "A plugin allowing users to interactively generate and render 3D models natively within an LLM web UI."
+  technologies: ["Python", "Generative AI", "LLMs"]
+  url: "https://github.com/Cian-H/openwebui_blender_plugin"
+
+- name: "Symbolic NN Tests"
+  description: "A research sandbox for testing simple ways of injecting symbolic knowledge and constraints into neural networks."
+  technologies: ["Python", "Machine Learning", "Symbolic AI"]
+  url: "https://github.com/Cian-H/symbolic_nn_tests"
+
+- name: "Workday Progress"
+  description: "A plugin for the Noctalia shell that adds a linear time display progress bar for work hours to assist with daily time management."
+  technologies: ["QML", "C++", "UI Design"]
+  url: "https://github.com/Cian-H/workday-progress"
+
+- name: "FastMath"
+  description: "A collection of highly optimized, fast approximate mathematical functions."
+  technologies: ["Rust", "Algorithms", "Mathematics"]
+  url: "https://github.com/Cian-H/fastmath"
+
+- name: "AM-D-Model Website"
+  description: "A modern, reactive frontend website developed for the AM-D-Model research project."
+  technologies: ["Svelte", "Frontend", "Web Development"]
+  url: "https://github.com/Cian-H/am-d-model.eu"
+
+- name: "I-Form Research Assistant"
+  description: "An experimental chatbot interface designed for intuitive data retrieval and interaction with scientific research datasets."
+  technologies: ["AI", "Chatbots", "Data Retrieval"]
+  url: "https://github.com/Cian-H/iform-research-assistant"
+
+- name: "I-Form Invenio RDM Modules"
+  description: "Developed custom modules, configuration overlays, and theme plugins for CERN's Invenio Research Data Management (RDM) framework."
+  technologies: ["Python", "CERN Invenio", "Data Management"]
+  url: "https://github.com/Cian-H/iform-invenio"
+
+- name: "Declarative NixOS Infrastructure"
+  description: "A fully declarative, reproducible operating system configuration using Nix to streamline migration and deployment across personal and server infrastructure."
+  technologies: ["Nix", "Linux", "SysAdmin", "DevOps"]
+  url: "https://github.com/Cian-H/My_NixOS_Config"
