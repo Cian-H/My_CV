@@ -1,6 +1,6 @@
 [package]
 name = "cv-api"
-version = "0.1.0"
+version = "2026.821.1654"
 edition = "2024"
 
 [dependencies]
@@ -13,6 +13,11 @@ tower-http = { version = "0.7.0", features = ["cors"] }
 clap = { version = "4.5", features = ["derive", "env"] }
 anyhow = "1.0.104"
 bson = "2.2"
+minijinja = "2.24.0"
+typst = "0.15.1"
+typst-pdf = "0.15.1"
+chrono = "0.4.45"
+fontdb = "0.24.0"
 
 [dev-dependencies]
 http-body-util = "0.1.5"
