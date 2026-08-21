@@ -87,7 +87,7 @@
 
   #for pub in cv.publications [
     #strong[#pub.title] \
-    #pub.journal, #pub.year 
+    #pub.journal, #pub.year
     #if pub.doi != none and pub.doi != "" [
       | #link("https://doi.org/" + pub.doi)[DOI]
     ]

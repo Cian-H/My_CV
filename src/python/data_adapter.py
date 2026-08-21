@@ -43,17 +43,17 @@ class DataAdapter:
                 for col in df.columns:
                     series = df[col]
                     if series.dtype == pl.String or series.dtype == pl.Null:
-                        import numpy as np
-
+                        dt = h5py.string_dtype(encoding="utf-8")
                         data_list = [
                             "" if x is None else str(x) for x in series.to_list()
                         ]
-                        data = np.array(
-                            [x.encode("utf-8") for x in data_list], dtype="S"
-                        )
+                        import numpy as np
+
+                        data = np.array(data_list, dtype=object)
                         group.create_dataset(
                             col,
                             data=data,
+                            dtype=dt,
                             compression="gzip",
                             compression_opts=9,
                         )
@@ -83,8 +83,11 @@ class DataAdapter:
                     for col in group:
                         ds = group[col]
                         data = ds[:]
-                        if data.dtype.kind == "S":
-                            data_dict[col] = [x.decode("utf-8") for x in data]
+                        if data.dtype.kind in {"S", "O"}:
+                            data_dict[col] = [
+                                x.decode("utf-8") if isinstance(x, bytes) else str(x)
+                                for x in data
+                            ]
                         else:
                             data_dict[col] = data
                     dfs[name] = pl.DataFrame(data_dict)

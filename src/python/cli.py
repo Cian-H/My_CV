@@ -63,15 +63,16 @@ def serve():
     import threading
 
     # Ensure everything is built
+    build_api()
     build_frontend()
 
     def run_frontend():
         print("Starting static frontend on http://127.0.0.1:8000")
-        os.chdir("build")
-        Handler = http.server.SimpleHTTPRequestHandler
 
-        # Suppress logging to keep output clean
-        class QuietHandler(Handler):
+        class QuietHandler(http.server.SimpleHTTPRequestHandler):
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, directory="build", **kwargs)
+
             def log_message(self, format, *args):
                 pass
 
