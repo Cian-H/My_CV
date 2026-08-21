@@ -10,10 +10,20 @@
   #text(size: 20pt, weight: "bold", fill: rgb("1C4587"))[#cv.personal_info.name]
 
   *Email:* #cv.personal_info.email
-  #if "orcid" in cv.personal_info [ | *ORCID:* #link(cv.personal_info.orcid)[#cv.personal_info.orcid.replace("https://orcid.org/", "")]]
-  
+  #if (
+    "orcid" in cv.personal_info
+  ) [ | *ORCID:* #link(cv.personal_info.orcid)[#cv.personal_info.orcid.replace("https://orcid.org/", "")]]
+
   #if "links" in cv.personal_info and cv.personal_info.links.len() > 0 [
-    #cv.personal_info.links.map(l => [*#l.name:* #link(l.url)[#l.url.replace("https://", "").replace("http://", "")]]).join(" | ")
+    #(
+      cv
+        .personal_info
+        .links
+        .map(
+          l => [*#l.name:* #link(l.url)[#l.url.replace("https://", "").replace("http://", "")]],
+        )
+        .join(" | ")
+    )
   ]
 ]
 
@@ -25,71 +35,71 @@
 #v(1em)
 
 #if "skills" in cv [
-== SKILLS
+  == SKILLS
 
-#grid(
-  columns: (1fr, 1fr),
-  gutter: 20pt,
-  [
-    #align(center)[*Technical*]
-    #for skill in cv.skills {
-      if skill.category == "Technical" [
-        - #skill.description
-      ]
-    }
-  ],
-  [
-    #align(center)[*Personal*]
-    #for skill in cv.skills {
-      if skill.category == "Personal" [
-        - #skill.description
-      ]
-    }
-  ],
-)
+  #grid(
+    columns: (1fr, 1fr),
+    gutter: 20pt,
+    [
+      #align(center)[*Technical*]
+      #for skill in cv.skills {
+        if skill.category == "Technical" [
+          - #skill.description
+        ]
+      }
+    ],
+    [
+      #align(center)[*Personal*]
+      #for skill in cv.skills {
+        if skill.category == "Personal" [
+          - #skill.description
+        ]
+      }
+    ],
+  )
 
-#v(1em)
+  #v(1em)
 
 ]
 
 #if "experience" in cv or "employment" in cv [
-== EMPLOYMENT EXPERIENCE
+  == EMPLOYMENT EXPERIENCE
 
-#if "experience" in cv and cv.experience.len() > 0 [
-  #for exp in cv.experience [
-    #strong[#exp.organization#if exp.location != none [, #exp.location]] \
-    #strong[#exp.title], #exp.date
-    #for bullet in exp.bullets [
-      - #bullet
+  #if "experience" in cv and cv.experience.len() > 0 [
+    #for exp in cv.experience [
+      #strong[#exp.organization#if exp.location != none [, #exp.location]] \
+      #strong[#exp.title], #exp.date
+      #for bullet in exp.bullets [
+        - #bullet
+      ]
+      #v(0.5em)
     ]
-    #v(0.5em)
+  ] else if "employment" in cv and cv.employment.len() > 0 [
+    #for emp in cv.employment [
+      #strong[#emp.organization#if emp.department != none [, #emp.department]] \
+      #strong[#emp.role], #emp.start_date - #if emp.end_date != none [#emp.end_date] else [Present]
+      #v(0.5em)
+    ]
   ]
-] else if "employment" in cv and cv.employment.len() > 0 [
-  #for emp in cv.employment [
-    #strong[#emp.organization#if emp.department != none [, #emp.department]] \
-    #strong[#emp.role], #emp.start_date - #if emp.end_date != none [#emp.end_date] else [Present]
-    #v(0.5em)
-  ]
-]
 
-#v(1em)
+  #v(1em)
 
 ]
 
 #if "education" in cv [
-== EDUCATION
+  == EDUCATION
 
-#grid(
-  columns: (1fr, 4fr),
-  gutter: 10pt,
-  ..cv
-    .education
-    .map(edu => (
-      [*#edu.date*],
-      [#edu.degree, #edu.institution #if edu.description != none and edu.description != "" [\ #edu.description]],
-    ))
-    .flatten()
-)
+  #grid(
+    columns: (1fr, 4fr),
+    gutter: 10pt,
+    ..cv
+      .education
+      .map(edu => (
+        [*#edu.date*],
+        [#edu.degree, #edu.institution #if edu.description != none and edu.description != "" [\ #edu.description]],
+      ))
+      .flatten()
+  )
 
 ]
 

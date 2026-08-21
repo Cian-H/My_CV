@@ -47,7 +47,7 @@ async fn get_cv_pdf(
         .arg(&temp_pdf)
         .output()
         .expect("Failed to execute typst");
-        
+
     let _ = std::fs::write(format!("build/typst_error_{}.txt", uuid), &output.stderr);
     let _ = std::fs::write(format!("build/typst_stdout_{}.txt", uuid), &output.stdout);
 

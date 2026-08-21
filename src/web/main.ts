@@ -174,6 +174,16 @@ async function renderCV() {
     const buffer = await response.arrayBuffer();
     const cv: CVData = BSON.deserialize(new Uint8Array(buffer));
 
+    // Retro mode toggle
+    const isRetro =
+      (document.getElementById("toggle-retro") as HTMLInputElement)?.checked ||
+      false;
+    if (isRetro) {
+      document.body.classList.add("retro-mode");
+    } else {
+      document.body.classList.remove("retro-mode");
+    }
+
     cvContent.innerHTML = ""; // Clear loader
 
     if (!cv || !cv.personal_info) {
@@ -183,7 +193,17 @@ async function renderCV() {
 
     // --- Personal Info ---
     const pi = cv.personal_info;
-    cvContent.appendChild(el("h1", "", pi.name));
+    const nameH1 = el("h1");
+    if (isRetro && pi.name.length > 0) {
+      const firstLetter = document.createElement("span");
+      firstLetter.className = "retro-cursor";
+      firstLetter.textContent = pi.name[0];
+      nameH1.appendChild(firstLetter);
+      nameH1.appendChild(document.createTextNode(pi.name.substring(1)));
+    } else {
+      nameH1.textContent = pi.name;
+    }
+    cvContent.appendChild(nameH1);
 
     const emailLink = link(`mailto:${pi.email}`, pi.email);
 
@@ -469,6 +489,69 @@ async function renderCV() {
         cvContent.appendChild(ul);
       }
     }
+
+    // Lisp Mode
+    const isLisp =
+      (document.getElementById("toggle-lisp") as HTMLInputElement)?.checked ||
+      false;
+    if (isLisp) {
+      const rainbowColors = [
+        "#ff0000",
+        "#ff7f00",
+        "#c4c400",
+        "#00cc00",
+        "#0000ff",
+        "#4b0082",
+        "#9400d3",
+      ];
+
+      const createParen = (text: string, depth: number) => {
+        const span = document.createElement("span");
+        span.className = "lisp-paren";
+        span.style.color = rainbowColors[depth % rainbowColors.length];
+        span.style.fontWeight = "bold";
+        span.textContent = text;
+        return span;
+      };
+
+      const applyLisp = (node: Node, depth: number) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          const text = node.textContent?.trim();
+          if (!text) return;
+
+          const words = text.split(/\s+/);
+          const frag = document.createDocumentFragment();
+
+          words.forEach((w) => {
+            frag.appendChild(createParen("( ", depth + 1));
+            const textSpan = document.createElement("span");
+            textSpan.className = "lisp-text";
+            textSpan.textContent = w;
+            frag.appendChild(textSpan);
+            frag.appendChild(createParen(" ) ", depth + 1));
+          });
+          node.parentNode?.replaceChild(frag, node);
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          const el = node as HTMLElement;
+          if (
+            el.tagName === "SCRIPT" || el.classList.contains("lisp-paren") ||
+            el.classList.contains("lisp-text")
+          ) return;
+
+          Array.from(el.childNodes).forEach((child) =>
+            applyLisp(child, depth + 1)
+          );
+
+          if (el.id !== "cv-content") {
+            el.prepend(createParen("( ", depth));
+            el.append(createParen(" )", depth));
+          }
+        }
+      };
+
+      const cvContentEl = document.getElementById("cv-content");
+      if (cvContentEl) applyLisp(cvContentEl, 0);
+    }
   } catch (e) {
     cvContent.textContent = "Error loading CV API: " + e;
   }
@@ -476,6 +559,62 @@ async function renderCV() {
 
 // Setup Event Listeners
 document.addEventListener("DOMContentLoaded", () => {
+  // --- FUN STUFF LOGIC ---
+  const cats: HTMLDivElement[] = [];
+  let catInterval: number | null = null;
+  const toggleCat = document.getElementById("toggle-cat") as HTMLInputElement;
+  const toggleRetro = document.getElementById(
+    "toggle-retro",
+  ) as HTMLInputElement;
+  const toggleLisp = document.getElementById("toggle-lisp") as HTMLInputElement;
+
+  if (toggleCat) {
+    toggleCat.addEventListener("change", () => {
+      if (toggleCat.checked) {
+        if (!catInterval) {
+          catInterval = window.setInterval(() => {
+            if (Math.random() < 0.4 && cats.length < 8) {
+              const cat = document.createElement("div");
+              cat.textContent = "🐈";
+              cat.style.position = "fixed";
+              cat.style.fontSize = "32px";
+              cat.style.zIndex = "9998";
+              const startLeft = Math.random() > 0.5;
+              cat.style.top = Math.floor(Math.random() * 90) + "vh";
+              cat.style.left = startLeft ? "-50px" : "105vw";
+              cat.style.transform = startLeft ? "scaleX(-1)" : "scaleX(1)";
+              cat.style.transition = "left 10s linear";
+              cat.style.pointerEvents = "none";
+              document.body.appendChild(cat);
+              cats.push(cat);
+
+              requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                  cat.style.left = startLeft ? "105vw" : "-50px";
+                });
+              });
+
+              setTimeout(() => {
+                cat.remove();
+                cats.splice(cats.indexOf(cat), 1);
+              }, 10500);
+            }
+          }, 1500);
+        }
+      } else {
+        if (catInterval) clearInterval(catInterval);
+        catInterval = null;
+        cats.forEach((c) => c.remove());
+        cats.length = 0;
+      }
+    });
+  }
+
+  if (toggleRetro) toggleRetro.addEventListener("change", renderCV);
+  if (toggleLisp) toggleLisp.addEventListener("change", renderCV);
+
+  // --- END FUN STUFF ---
+
   // Checkboxes
   document.querySelectorAll('.controls input[type="checkbox"]').forEach(
     (cb) => {

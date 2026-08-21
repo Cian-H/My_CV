@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'Departure Mono';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2409-1@1.0/DepartureMono-Regular.woff2')
+    format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
   --bg-color: #ffffff;
   --text-color: #1a1a1a;
@@ -209,4 +217,79 @@ a:hover {
 .btn-primary:hover {
   opacity: 0.9;
   background: var(--text-color);
+}
+
+/* FUN STUFF MODES */
+.fun-stuff label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+body.retro-mode,
+body.retro-mode * {
+  background-color: #000 !important;
+  color: #33ff00 !important;
+  font-family: 'Departure Mono', monospace !important;
+  -webkit-font-smoothing: none !important;
+  font-smooth: never !important;
+  border-color: #33ff00 !important;
+}
+
+body.retro-mode,
+body.retro-mode * {
+  background-color: #000 !important;
+  color: #33ff00 !important;
+  font-family: 'Departure Mono', monospace !important;
+  -webkit-font-smoothing: none !important;
+  font-smooth: never !important;
+  border-color: #33ff00 !important;
+}
+body.retro-mode {
+  text-shadow: 0 0 5px rgba(51, 255, 0, 0.7) !important;
+}
+
+body.retro-mode .sidebar {
+  background-color: #0a0a0a !important;
+  border-right: 1px solid #33ff00 !important;
+}
+body.retro-mode a {
+  color: #33ff00 !important;
+  text-decoration: underline !important;
+}
+body.retro-mode .btn,
+body.retro-mode select {
+  background: #000 !important;
+  color: #33ff00 !important;
+  border: 1px solid #33ff00 !important;
+  box-shadow: none !important;
+}
+body.retro-mode .contact-links a {
+  border-color: #33ff00 !important;
+  background-color: #000 !important;
+}
+body.retro-mode::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.2) 50%);
+  background-size: 100% 4px;
+  z-index: 9999;
+  pointer-events: none;
+}
+.retro-cursor {
+  background-color: #33ff00;
+  color: #000;
+  animation: blink 1s step-end infinite;
+  display: inline-block;
+}
+@keyframes blink {
+  50% {
+    background-color: transparent;
+    color: #33ff00;
+  }
 }
