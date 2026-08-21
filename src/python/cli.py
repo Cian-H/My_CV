@@ -42,8 +42,11 @@ def build_api():
     subprocess.run(["cargo", "build", "--release"], cwd="src/rust", check=False)
 
 
-@app.command(name="serve-api")
-def serve_api():
+@app.command(
+    name="serve-api",
+    context_settings={"allow_extra_args": True, "ignore_unknown_options": True},
+)
+def serve_api(ctx: typer.Context):
     """Run the Rust API server."""
     print("Running Rust API server...")
     api_exe = "src/rust/target/release/cv-api"
@@ -52,11 +55,16 @@ def serve_api():
             f"API executable not found at {api_exe}. Please run 'cv build-api' first."
         )
         sys.exit(1)
-    subprocess.run([api_exe], check=False)
+
+    cmd = [api_exe] + ctx.args
+    subprocess.run(cmd, check=False)
 
 
-@app.command(name="serve")
-def serve():
+@app.command(
+    name="serve",
+    context_settings={"allow_extra_args": True, "ignore_unknown_options": True},
+)
+def serve(ctx: typer.Context):
     """Serve the static frontend and the API server together for testing."""
     import http.server
     import socketserver
@@ -83,7 +91,7 @@ def serve():
     t.start()
 
     # Run the API in the main thread so Ctrl+C kills everything
-    serve_api()
+    serve_api(ctx)
 
 
 def main():

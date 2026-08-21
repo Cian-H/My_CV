@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CV</title>
+    <script src="https://unpkg.com/bson@6.8.0/lib/bson.bundle.js"></script>
     <style>
       body {
         font-family: sans-serif;
@@ -40,15 +41,16 @@
     <script>
       async function loadCV() {
         try {
-          // Fetch from the Rust API
-          const response = await fetch("http://127.0.0.1:3000/api/cv");
-          const cv = await response.json();
+          // Fetch from the Rust API (BSON endpoint)
+          const response = await fetch("http://127.0.0.1:3000/api/cv.bson");
+          const buffer = await response.arrayBuffer();
+          const cv = BSON.deserialize(new Uint8Array(buffer));
 
           let html = `
                     <h1>${cv.personal_info.name}</h1>
                     <p class="meta">
-                        ${cv.personal_info.email} | 
-                        <a href="https://github.com/${cv.personal_info.github}">GitHub</a> | 
+                        ${cv.personal_info.email} |
+                        <a href="https://github.com/${cv.personal_info.github}">GitHub</a> |
                         <a href="${cv.personal_info.orcid}">ORCID</a>
                     </p>
                     <p>${cv.personal_info.profile}</p>
