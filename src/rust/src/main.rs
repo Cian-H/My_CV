@@ -152,11 +152,28 @@ async fn get_cv(file: Arc<File>) -> Json<Value> {
     Json(Value::Object(cv))
 }
 
+use clap::Parser;
+
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+    #[arg(short, long, env = "CV_PORT", default_value_t = 3000)]
+    port: u16,
+
+    #[arg(short, long, env = "CV_BIND", default_value = "127.0.0.1")]
+    bind: String,
+
+    #[arg(short, long, env = "CV_HDF5_PATH", default_value = "cv_data.h5")]
+    file: String,
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let file = Arc::new(File::open(
-        std::env::var("CV_HDF5_PATH").unwrap_or_else(|_| "cv_data.h5".to_string()),
-    )?);
+    let args = Args::parse();
+
+    let file = Arc::new(File::open(&args.file).unwrap_or_else(|e| {
+        panic!("Failed to open HDF5 file at '{}': {}", args.file, e);
+    }));
 
     let app = Router::new()
         .route(
@@ -171,7 +188,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         )
         .layer(tower_http::cors::CorsLayer::permissive());
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    let addr: SocketAddr = format!("{}:{}", args.bind, args.port).parse()?;
     println!("CV API listening on {}", addr);
     let listener = tokio::net::TcpListener::bind(addr).await?;
     axum::serve(listener, app).await?;
