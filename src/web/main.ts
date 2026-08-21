@@ -1,6 +1,7 @@
 /// <reference lib="dom" />
 // Global BSON from CDN
-declare const BSON: any; // deno-lint-ignore no-explicit-any
+// deno-lint-ignore no-explicit-any
+declare const BSON: any;
 
 interface Link {
   name: string;
@@ -561,7 +562,7 @@ async function renderCV() {
 document.addEventListener("DOMContentLoaded", () => {
   // --- FUN STUFF LOGIC ---
   const cats: HTMLDivElement[] = [];
-  let catInterval: number | null = null;
+  let catInterval: ReturnType<typeof setInterval> | null = null;
   const toggleCat = document.getElementById("toggle-cat") as HTMLInputElement;
   const toggleRetro = document.getElementById(
     "toggle-retro",
@@ -572,7 +573,7 @@ document.addEventListener("DOMContentLoaded", () => {
     toggleCat.addEventListener("change", () => {
       if (toggleCat.checked) {
         if (!catInterval) {
-          catInterval = window.setInterval(() => {
+          catInterval = globalThis.setInterval(() => {
             if (Math.random() < 0.4 && cats.length < 8) {
               const cat = document.createElement("div");
               cat.textContent = "🐈";
@@ -625,7 +626,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Theme Selector
   const applyTheme = (theme: string) => {
     if (theme === "auto") {
-      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const isDark = globalThis.matchMedia("(prefers-color-scheme: dark)").matches;
       document.documentElement.setAttribute(
         "data-theme",
         isDark ? "dark" : "light",
@@ -646,7 +647,7 @@ document.addEventListener("DOMContentLoaded", () => {
     applyTheme(themeSel.value);
 
     // Listen for system changes if auto is selected
-    window.matchMedia("(prefers-color-scheme: dark)").addEventListener(
+    globalThis.matchMedia("(prefers-color-scheme: dark)").addEventListener(
       "change",
       () => {
         if (themeSel.value === "auto") applyTheme("auto");
