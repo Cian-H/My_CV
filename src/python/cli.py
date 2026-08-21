@@ -34,6 +34,7 @@ def build_frontend():
     os.makedirs("build", exist_ok=True)
     shutil.copy2("src/web/index.html", "build/index.html")
     shutil.copy2("src/web/style.css", "build/style.css")
+    shutil.copy2("src/web/favicon.jpg", "build/favicon.jpg")
     subprocess.run(
         [
             "deno",
