@@ -1,0 +1,11 @@
+[[repos]]
+repo = "local"
+
+[[repos.hooks]]
+id = "calver-bump"
+name = "Bump CalVer version"
+entry = "./scripts/bump-version.sh"
+language = "system"
+always_run = true
+pass_filenames = false
+stages = ["pre-commit"]
