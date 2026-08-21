@@ -13,6 +13,7 @@
     pkgs.hdf5_1_10
     pkgs.nodejs
     pkgs.pkg-config
+    pkgs.prek
     pkgs.prettier
     pkgs.ruff
     pkgs.rustc

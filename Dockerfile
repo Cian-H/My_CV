@@ -1,4 +1,4 @@
-FROM rust:alpine as builder
+FROM rust:alpine AS builder
 WORKDIR /app
 RUN apk add --no-cache musl-dev hdf5-dev pkgconfig
 
