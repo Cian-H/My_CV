@@ -5,6 +5,7 @@ mod api;
 mod cli;
 mod data;
 mod server;
+mod typst_world;
 
 use anyhow::{Context, Result};
 use clap::Parser;

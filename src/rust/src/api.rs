@@ -1,10 +1,12 @@
+use crate::typst_world::MinimalWorld;
 use axum::{
     Json, Router,
-    routing::get,
-    extract::{State, Query},
-    response::IntoResponse,
+    extract::{Query, State},
     http::header,
+    response::IntoResponse,
+    routing::get,
 };
+use minijinja::Environment;
 use serde::Deserialize;
 use serde_json::Value;
 use std::sync::Arc;
@@ -14,8 +16,33 @@ pub fn api_router(state: Arc<RwLock<Value>>) -> Router {
     Router::new()
         .route("/api/cv", get(get_cv))
         .route("/api/cv.bson", get(get_cv_bson))
+        .route("/api/cv.pdf", get(get_cv_pdf))
         .with_state(state)
         .layer(tower_http::cors::CorsLayer::permissive())
+}
+
+async fn get_cv_pdf(
+    State(cv): State<Arc<RwLock<Value>>>,
+    Query(query): Query<CvQuery>,
+) -> impl IntoResponse {
+    let data = cv.read().await.clone();
+    let filtered = filter_cv(data, &query);
+
+    // 1. Template
+    let mut env = Environment::new();
+    let tmpl_str = include_str!("../templates/cv.typ");
+    env.add_template("cv", tmpl_str).unwrap();
+    let tmpl = env.get_template("cv").unwrap();
+    let rendered = tmpl
+        .render(&filtered)
+        .unwrap_or_else(|e| format!("Template error: {}", e));
+
+    // 2. Compile Typst
+    let world = MinimalWorld::new(rendered);
+    let document = typst::compile(&world).output.unwrap();
+    let pdf = typst_pdf::pdf(&document, &typst_pdf::PdfOptions::default()).unwrap();
+
+    ([(header::CONTENT_TYPE, "application/pdf")], pdf)
 }
 
 #[derive(Deserialize)]
@@ -34,17 +61,14 @@ fn filter_cv(mut data: Value, query: &CvQuery) -> Value {
     data
 }
 
-async fn get_cv(
-    State(cv): State<Arc<RwLock<Value>>>,
-    Query(query): Query<CvQuery>
-) -> Json<Value> {
+async fn get_cv(State(cv): State<Arc<RwLock<Value>>>, Query(query): Query<CvQuery>) -> Json<Value> {
     let data = cv.read().await.clone();
     Json(filter_cv(data, &query))
 }
 
 async fn get_cv_bson(
     State(cv): State<Arc<RwLock<Value>>>,
-    Query(query): Query<CvQuery>
+    Query(query): Query<CvQuery>,
 ) -> impl IntoResponse {
     let data = cv.read().await.clone();
     let filtered = filter_cv(data, &query);

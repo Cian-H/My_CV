@@ -605,7 +605,7 @@ dependencies = [
 
 [[package]]
 name = "cv-api"
-version = "2026.821.1654"
+version = "2026.8.21-1"
 dependencies = [
  "anyhow",
  "axum",

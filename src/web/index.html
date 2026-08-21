@@ -3,170 +3,56 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CV</title>
+    <title>Cian Hughes - CV</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
     <script src="https://unpkg.com/bson@6.8.0/lib/bson.bundle.js"></script>
-    <style>
-      body {
-        font-family: sans-serif;
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-        line-height: 1.6;
-      }
-      h1,
-      h2,
-      h3 {
-        color: #333;
-      }
-      .skills-grid {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        gap: 10px;
-      }
-      .skill-cat {
-        font-weight: bold;
-      }
-      .exp-item {
-        margin-bottom: 20px;
-      }
-      .meta {
-        color: #666;
-        font-size: 0.9em;
-      }
-      .controls {
-        background: #f4f4f4;
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-      }
-      .controls label {
-        margin-right: 15px;
-        font-weight: bold;
-      }
-    </style>
   </head>
   <body>
-    <div class="controls">
-      <strong>Show Sections:</strong><br>
-      <label><input type="checkbox" id="toggle-experience" checked onchange="loadCV()"> Experience / Employment</label>
-      <label><input type="checkbox" id="toggle-education" checked onchange="loadCV()"> Education</label>
-      <label><input type="checkbox" id="toggle-publications" checked onchange="loadCV()"> Publications / Papers</label>
-      <label><input type="checkbox" id="toggle-skills" checked onchange="loadCV()"> Skills</label>
+    <div class="layout-container">
+      <div class="sidebar controls" id="controls">
+        <div class="controls-header">
+          <strong>CV Generator</strong>
+        </div>
+        <div class="action-buttons">
+          <button id="theme-toggle" class="btn">Toggle Theme</button>
+          <button id="download-pdf" class="btn btn-primary">
+            Download PDF
+          </button>
+        </div>
+        <div class="options-list">
+          <label
+            ><input type="checkbox" id="toggle-experience" checked /> Experience
+            / Employment</label
+          >
+          <label
+            ><input type="checkbox" id="toggle-education" checked />
+            Education</label
+          >
+          <label
+            ><input type="checkbox" id="toggle-publications" checked />
+            Publications &amp; Conferences</label
+          >
+          <label
+            ><input type="checkbox" id="toggle-skills" checked /> Skills &amp;
+            Languages</label
+          >
+          <label
+            ><input type="checkbox" id="toggle-projects" checked /> Projects
+            &amp; Certs</label
+          >
+        </div>
+      </div>
+
+      <div id="cv-content" class="main-content">Loading CV...</div>
     </div>
 
-    <div id="cv-content">Loading CV...</div>
-
-    <script>
-      async function loadCV() {
-        try {
-          // Construct the exclude query based on toggles
-          let excludes = [];
-          if (!document.getElementById("toggle-experience").checked) {
-             excludes.push("experience", "employment");
-          }
-          if (!document.getElementById("toggle-education").checked) {
-             excludes.push("education");
-          }
-          if (!document.getElementById("toggle-publications").checked) {
-             excludes.push("publications");
-          }
-          if (!document.getElementById("toggle-skills").checked) {
-             excludes.push("skills");
-          }
-
-          let url = "http://127.0.0.1:3000/api/cv.bson";
-          if (excludes.length > 0) {
-              url += "?exclude=" + excludes.join(",");
-          }
-
-          // Fetch from the Rust API (BSON endpoint)
-          const response = await fetch(url);
-          const buffer = await response.arrayBuffer();
-          const cv = BSON.deserialize(new Uint8Array(buffer));
-
-          if (!cv || !cv.personal_info) {
-              document.getElementById("cv-content").innerHTML = "Error: Invalid CV data received.";
-              return;
-          }
-
-          let html = `
-                    <h1>${cv.personal_info.name}</h1>
-                    <p class="meta">
-                        ${cv.personal_info.email} | 
-                        <a href="https://github.com/${cv.personal_info.github}">GitHub</a> | 
-                        <a href="${cv.personal_info.orcid}">ORCID</a>
-                    </p>
-                    <p>${cv.personal_info.profile}</p>
-
-                    `;
-          
-          if (cv.experience && cv.experience.length > 0) {
-            html += `<h2>Experience</h2>`;
-            cv.experience.forEach((exp) => {
-              html += `
-                          <div class="exp-item">
-                              <h3>${exp.title} - ${exp.organization}</h3>
-                              <p class="meta">${exp.date} | ${exp.location}</p>
-                              <ul>
-                                  ${exp.bullets.map((b) => `<li>${b}</li>`).join("")}
-                              </ul>
-                          </div>
-                      `;
-            });
-          } else if (cv.employment && cv.employment.length > 0) {
-            html += `<h2>Employment</h2>`;
-            cv.employment.forEach((emp) => {
-              html += `
-                          <div class="exp-item">
-                              <h3>${emp.role} - ${emp.organization}</h3>
-                              <p class="meta">${emp.start_date} - ${emp.end_date || "Present"} | ${emp.department || ""}</p>
-                          </div>
-                      `;
-            });
-          }
-
-          if (cv.education && cv.education.length > 0) {
-            html += `<h2>Education</h2>`;
-            cv.education.forEach((edu) => {
-              html += `
-                          <div class="exp-item">
-                              <h3>${edu.degree} - ${edu.institution}</h3>
-                              <p class="meta">${edu.date}</p>
-                              ${edu.description ? `<p>${edu.description}</p>` : ""}
-                          </div>
-                      `;
-            });
-          }
-
-          if (cv.publications && cv.publications.length > 0) {
-            html += `<h2>Publications</h2>`;
-            cv.publications.forEach((pub) => {
-              html += `
-                          <div class="exp-item">
-                              <h3>${pub.title}</h3>
-                              <p class="meta">${pub.year} | ${pub.journal} ${pub.doi ? `| <a href="https://doi.org/${pub.doi}">DOI</a>` : ""} ${pub.url ? `| <a href="${pub.url}">Link</a>` : ""}</p>
-                          </div>
-                      `;
-            });
-          }
-
-          if (cv.skills && cv.skills.length > 0) {
-             html += `<h2>Skills</h2><div class="skills-grid">`;
-             cv.skills.forEach(skill => {
-                 html += `<div class="skill-cat">${skill.category}</div><div>${skill.description}</div>`;
-             });
-             html += `</div>`;
-          }
-
-          document.getElementById("cv-content").innerHTML = html;
-        } catch (e) {
-          document.getElementById("cv-content").innerHTML =
-            "Error loading CV API: " + e;
-        }
-      }
-
-      // Initial load
-      document.addEventListener("DOMContentLoaded", loadCV);
-    </script>
+    <script src="bundle.js"></script>
   </body>
 </html>

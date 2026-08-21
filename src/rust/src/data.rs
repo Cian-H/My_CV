@@ -19,11 +19,21 @@ pub fn read_cv(path: &str) -> Result<Value> {
 
     if let Ok(group) = file.group("personal_info") {
         let mut pi = Map::new();
-        for col in &["name", "email", "github", "orcid", "profile"] {
+        for col in &[
+            "name", "email", "orcid", "profile", "city", "country", "timezone",
+        ] {
             if let Ok(v) = read_string_column(&group, col) {
                 if let Some(s) = v.first() {
-                    pi.insert(col.to_string(), json!(s));
+                    if !s.is_empty() {
+                        pi.insert(col.to_string(), json!(s));
+                    }
                 }
+            }
+        }
+        if let Ok(v) = read_string_column(&group, "links") {
+            if let Some(s) = v.first() {
+                let parsed: Value = serde_json::from_str(s).unwrap_or_else(|_| json!([]));
+                pi.insert("links".to_string(), parsed);
             }
         }
         cv.insert("personal_info".to_string(), Value::Object(pi));
