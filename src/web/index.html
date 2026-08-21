@@ -33,31 +33,75 @@
         color: #666;
         font-size: 0.9em;
       }
+      .controls {
+        background: #f4f4f4;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+      .controls label {
+        margin-right: 15px;
+        font-weight: bold;
+      }
     </style>
   </head>
   <body>
+    <div class="controls">
+      <strong>Show Sections:</strong><br>
+      <label><input type="checkbox" id="toggle-experience" checked onchange="loadCV()"> Experience / Employment</label>
+      <label><input type="checkbox" id="toggle-education" checked onchange="loadCV()"> Education</label>
+      <label><input type="checkbox" id="toggle-publications" checked onchange="loadCV()"> Publications / Papers</label>
+      <label><input type="checkbox" id="toggle-skills" checked onchange="loadCV()"> Skills</label>
+    </div>
+
     <div id="cv-content">Loading CV...</div>
 
     <script>
       async function loadCV() {
         try {
+          // Construct the exclude query based on toggles
+          let excludes = [];
+          if (!document.getElementById("toggle-experience").checked) {
+             excludes.push("experience", "employment");
+          }
+          if (!document.getElementById("toggle-education").checked) {
+             excludes.push("education");
+          }
+          if (!document.getElementById("toggle-publications").checked) {
+             excludes.push("publications");
+          }
+          if (!document.getElementById("toggle-skills").checked) {
+             excludes.push("skills");
+          }
+
+          let url = "http://127.0.0.1:3000/api/cv.bson";
+          if (excludes.length > 0) {
+              url += "?exclude=" + excludes.join(",");
+          }
+
           // Fetch from the Rust API (BSON endpoint)
-          const response = await fetch("http://127.0.0.1:3000/api/cv.bson");
+          const response = await fetch(url);
           const buffer = await response.arrayBuffer();
           const cv = BSON.deserialize(new Uint8Array(buffer));
+
+          if (!cv || !cv.personal_info) {
+              document.getElementById("cv-content").innerHTML = "Error: Invalid CV data received.";
+              return;
+          }
 
           let html = `
                     <h1>${cv.personal_info.name}</h1>
                     <p class="meta">
-                        ${cv.personal_info.email} |
-                        <a href="https://github.com/${cv.personal_info.github}">GitHub</a> |
+                        ${cv.personal_info.email} | 
+                        <a href="https://github.com/${cv.personal_info.github}">GitHub</a> | 
                         <a href="${cv.personal_info.orcid}">ORCID</a>
                     </p>
                     <p>${cv.personal_info.profile}</p>
 
                     `;
-          html += `<h2>Experience</h2>`;
+          
           if (cv.experience && cv.experience.length > 0) {
+            html += `<h2>Experience</h2>`;
             cv.experience.forEach((exp) => {
               html += `
                           <div class="exp-item">
@@ -70,6 +114,7 @@
                       `;
             });
           } else if (cv.employment && cv.employment.length > 0) {
+            html += `<h2>Employment</h2>`;
             cv.employment.forEach((emp) => {
               html += `
                           <div class="exp-item">
@@ -80,16 +125,18 @@
             });
           }
 
-          html += `<h2>Education</h2>`;
-          cv.education.forEach((edu) => {
-            html += `
-                        <div class="exp-item">
-                            <h3>${edu.degree} - ${edu.institution}</h3>
-                            <p class="meta">${edu.date}</p>
-                            ${edu.description ? `<p>${edu.description}</p>` : ""}
-                        </div>
-                    `;
-          });
+          if (cv.education && cv.education.length > 0) {
+            html += `<h2>Education</h2>`;
+            cv.education.forEach((edu) => {
+              html += `
+                          <div class="exp-item">
+                              <h3>${edu.degree} - ${edu.institution}</h3>
+                              <p class="meta">${edu.date}</p>
+                              ${edu.description ? `<p>${edu.description}</p>` : ""}
+                          </div>
+                      `;
+            });
+          }
 
           if (cv.publications && cv.publications.length > 0) {
             html += `<h2>Publications</h2>`;
@@ -103,6 +150,14 @@
             });
           }
 
+          if (cv.skills && cv.skills.length > 0) {
+             html += `<h2>Skills</h2><div class="skills-grid">`;
+             cv.skills.forEach(skill => {
+                 html += `<div class="skill-cat">${skill.category}</div><div>${skill.description}</div>`;
+             });
+             html += `</div>`;
+          }
+
           document.getElementById("cv-content").innerHTML = html;
         } catch (e) {
           document.getElementById("cv-content").innerHTML =
@@ -110,7 +165,8 @@
         }
       }
 
-      loadCV();
+      // Initial load
+      document.addEventListener("DOMContentLoaded", loadCV);
     </script>
   </body>
 </html>

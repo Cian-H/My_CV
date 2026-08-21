@@ -1,4 +1,11 @@
-use axum::{Json, Router, extract::State, http::header, response::IntoResponse, routing::get};
+use axum::{
+    Json, Router,
+    routing::get,
+    extract::{State, Query},
+    response::IntoResponse,
+    http::header,
+};
+use serde::Deserialize;
 use serde_json::Value;
 use std::sync::Arc;
 use tokio::sync::RwLock;
@@ -11,14 +18,37 @@ pub fn api_router(state: Arc<RwLock<Value>>) -> Router {
         .layer(tower_http::cors::CorsLayer::permissive())
 }
 
-async fn get_cv(State(cv): State<Arc<RwLock<Value>>>) -> Json<Value> {
-    let data = cv.read().await.clone();
-    Json(data)
+#[derive(Deserialize)]
+pub struct CvQuery {
+    exclude: Option<String>,
 }
 
-async fn get_cv_bson(State(cv): State<Arc<RwLock<Value>>>) -> impl IntoResponse {
+fn filter_cv(mut data: Value, query: &CvQuery) -> Value {
+    if let Some(exclude_str) = &query.exclude {
+        if let Value::Object(ref mut map) = data {
+            for section in exclude_str.split(',') {
+                map.remove(section.trim());
+            }
+        }
+    }
+    data
+}
+
+async fn get_cv(
+    State(cv): State<Arc<RwLock<Value>>>,
+    Query(query): Query<CvQuery>
+) -> Json<Value> {
     let data = cv.read().await.clone();
-    let bytes = bson::to_vec(&data).unwrap_or_default();
+    Json(filter_cv(data, &query))
+}
+
+async fn get_cv_bson(
+    State(cv): State<Arc<RwLock<Value>>>,
+    Query(query): Query<CvQuery>
+) -> impl IntoResponse {
+    let data = cv.read().await.clone();
+    let filtered = filter_cv(data, &query);
+    let bytes = bson::to_vec(&filtered).unwrap_or_default();
     ([(header::CONTENT_TYPE, "application/bson")], bytes)
 }
 
