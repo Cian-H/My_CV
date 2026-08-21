@@ -626,7 +626,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Theme Selector
   const applyTheme = (theme: string) => {
     if (theme === "auto") {
-      const isDark = globalThis.matchMedia("(prefers-color-scheme: dark)").matches;
+      const isDark =
+        globalThis.matchMedia("(prefers-color-scheme: dark)").matches;
       document.documentElement.setAttribute(
         "data-theme",
         isDark ? "dark" : "light",
