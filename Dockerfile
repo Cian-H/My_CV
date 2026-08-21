@@ -2,6 +2,8 @@ FROM rust:alpine as builder
 WORKDIR /app
 RUN apk add --no-cache musl-dev hdf5-dev pkgconfig
 
+ENV HDF5_DIR=/usr
+
 COPY . /app/
 
 WORKDIR /app/src/rust
