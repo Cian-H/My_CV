@@ -1,7 +1,6 @@
 import json
 
 import h5py
-import hdf5plugin
 import polars as pl
 from src.python.models import CVData, Education, Experience, PersonalInfo, Skill
 
@@ -47,20 +46,16 @@ class DataAdapter:
                         group.create_dataset(
                             col,
                             data=data,
-                            **hdf5plugin.Blosc(
-                                cname="zstd", clevel=9, shuffle=hdf5plugin.Blosc.SHUFFLE
-                            ),
+                            compression="gzip",
+                            compression_opts=9,
                         )
                     else:
                         data = series.to_numpy()
                         group.create_dataset(
                             col,
                             data=data,
-                            **hdf5plugin.Blosc(
-                                cname="zstd",
-                                clevel=9,
-                                shuffle=hdf5plugin.Blosc.BITSHUFFLE,
-                            ),
+                            compression="gzip",
+                            compression_opts=9,
                         )
 
     def load_cv(self) -> CVData:

@@ -8,5 +8,8 @@ keeping a CV up to date.
 ```bash
 uv run cv sync
 uv run cv build-static
+uv run cv build-frontend
+uv run cv build-api
+uv run cv serve-api
 uv run cv serve
 ```

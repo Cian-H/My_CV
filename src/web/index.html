@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; }
+        h1, h2, h3 { color: #333; }
+        .skills-grid { display: grid; grid-template-columns: auto 1fr; gap: 10px; }
+        .skill-cat { font-weight: bold; }
+        .exp-item { margin-bottom: 20px; }
+        .meta { color: #666; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div id="cv-content">Loading CV...</div>
+
+    <script>
+        async function loadCV() {
+            try {
+                // Fetch from the Rust API
+                const response = await fetch('http://127.0.0.1:3000/api/cv');
+                const cv = await response.json();
+                
+                let html = `
+                    <h1>${cv.personal_info.name}</h1>
+                    <p class="meta">
+                        ${cv.personal_info.email} | 
+                        <a href="https://github.com/${cv.personal_info.github}">GitHub</a> | 
+                        <a href="${cv.personal_info.orcid}">ORCID</a>
+                    </p>
+                    <p>${cv.personal_info.profile}</p>
+
+                    <h2>Experience</h2>
+                `;
+                
+                cv.experience.forEach(exp => {
+                    html += `
+                        <div class="exp-item">
+                            <h3>${exp.title} - ${exp.organization}</h3>
+                            <p class="meta">${exp.date} | ${exp.location}</p>
+                            <ul>
+                                ${exp.bullets.map(b => `<li>${b}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                });
+
+                html += `<h2>Education</h2>`;
+                cv.education.forEach(edu => {
+                    html += `
+                        <div class="exp-item">
+                            <h3>${edu.degree} - ${edu.institution}</h3>
+                            <p class="meta">${edu.date}</p>
+                            ${edu.description ? `<p>${edu.description}</p>` : ''}
+                        </div>
+                    `;
+                });
+                
+                document.getElementById('cv-content').innerHTML = html;
+            } catch (e) {
+                document.getElementById('cv-content').innerHTML = 'Error loading CV API: ' + e;
+            }
+        }
+        
+        loadCV();
+    </script>
+</body>
+</html>
