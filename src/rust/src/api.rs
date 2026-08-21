@@ -27,11 +27,13 @@ async fn get_cv_pdf(
     let filtered = filter_cv(data, &query);
 
     // 1. Save filtered JSON to a temp file
-    let temp_json = format!("/tmp/cv_filtered_{}.json", uuid::Uuid::new_v4());
-    let _ = std::fs::write(&temp_json, serde_json::to_string(&filtered).unwrap());
+    let uuid = uuid::Uuid::new_v4();
+    let temp_json_fs = format!("build/cv_filtered_{}.json", uuid);
+    let temp_json_typst = format!("/build/cv_filtered_{}.json", uuid); // root-relative for typst
+    let _ = std::fs::write(&temp_json_fs, serde_json::to_string(&filtered).unwrap());
 
     // 2. Compile via CLI using the main template
-    let temp_pdf = format!("/tmp/cv_out_{}.pdf", uuid::Uuid::new_v4());
+    let temp_pdf = format!("build/cv_out_{}.pdf", uuid);
 
     // the working directory for the api is usually the project root or src/rust
     // We assume we are running from project root (since devenv shell does)
@@ -40,7 +42,7 @@ async fn get_cv_pdf(
         .arg("--root")
         .arg(".")
         .arg("--input")
-        .arg(format!("cv_data_path={}", temp_json))
+        .arg(format!("cv_data_path={}", temp_json_typst))
         .arg("src/typst/cv_template.typ")
         .arg(&temp_pdf)
         .output();
@@ -48,7 +50,7 @@ async fn get_cv_pdf(
     let pdf = std::fs::read(&temp_pdf).unwrap_or_default();
 
     // cleanup
-    let _ = std::fs::remove_file(&temp_json);
+    let _ = std::fs::remove_file(&temp_json_fs);
     let _ = std::fs::remove_file(&temp_pdf);
 
     ([(header::CONTENT_TYPE, "application/pdf")], pdf)
