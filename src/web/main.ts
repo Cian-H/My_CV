@@ -186,7 +186,26 @@ async function renderCV() {
     cvContent.appendChild(el("h1", "", pi.name));
 
     const emailLink = link(`mailto:${pi.email}`, pi.email);
+
     const orcidLink = link(pi.orcid, "ORCID");
+    orcidLink.innerHTML = "";
+    orcidLink.style.display = "inline-flex";
+    orcidLink.style.alignItems = "center";
+    orcidLink.style.gap = "6px";
+    orcidLink.style.color = "#A6CE39";
+    orcidLink.style.fontWeight = "600";
+    orcidLink.style.textDecoration = "none";
+
+    const orcidImg = document.createElement("img");
+    orcidImg.src = "https://cdn.simpleicons.org/orcid/A6CE39";
+    orcidImg.alt = "ORCID";
+    orcidImg.style.width = "16px";
+    orcidImg.style.height = "16px";
+
+    orcidLink.appendChild(orcidImg);
+    orcidLink.appendChild(
+      document.createTextNode(pi.orcid.replace("https://orcid.org/", "")),
+    );
 
     const customLinks = (pi.links || []).map((l) => {
       const a = link(l.url, l.name);
