@@ -32,14 +32,30 @@ def build_frontend():
     print("Building static frontend...")
     os.makedirs("build", exist_ok=True)
     shutil.copy2("src/web/index.html", "build/index.html")
-    print("Successfully built build/index.html")
+    shutil.copy2("src/web/style.css", "build/style.css")
+    subprocess.run(
+        [
+            "deno",
+            "run",
+            "-A",
+            "npm:esbuild",
+            "src/web/main.ts",
+            "--bundle",
+            "--outfile=build/bundle.js",
+            "--minify",
+        ],
+        check=True,
+    )
+    print("Successfully built build/")
 
 
 @app.command(name="build-api")
 def build_api():
     """Build the Rust API server executable."""
     print("Building Rust API server...")
-    subprocess.run(["cargo", "build", "--release"], cwd="src/rust", check=False)
+    subprocess.run(
+        ["devenv", "shell", "cargo", "build", "--release"], cwd="src/rust", check=False
+    )
 
 
 @app.command(
@@ -56,7 +72,7 @@ def serve_api(ctx: typer.Context):
         )
         sys.exit(1)
 
-    cmd = [api_exe] + ctx.args
+    cmd = ["devenv", "shell", api_exe] + ctx.args
     subprocess.run(cmd, check=False)
 
 
@@ -70,7 +86,6 @@ def serve(ctx: typer.Context):
     import socketserver
     import threading
 
-    # Ensure everything is built
     build_api()
     build_frontend()
 
@@ -90,8 +105,14 @@ def serve(ctx: typer.Context):
     t = threading.Thread(target=run_frontend, daemon=True)
     t.start()
 
-    # Run the API in the main thread so Ctrl+C kills everything
     serve_api(ctx)
+
+
+@app.command(name="test-api")
+def test_api():
+    """Run the Rust API unit tests."""
+    print("Running Rust API tests...")
+    subprocess.run(["cargo", "test"], cwd="src/rust", check=True)
 
 
 def main():
@@ -100,10 +121,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-@app.command(name="test-api")
-def test_api():
-    """Run the Rust API unit tests."""
-    print("Running Rust API tests...")
-    subprocess.run(["cargo", "test"], cwd="src/rust", check=True)

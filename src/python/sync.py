@@ -3,66 +3,41 @@ from pathlib import Path
 import yaml
 
 from src.python.data_adapter import DataAdapter
-from src.python.models import (
-    CVData,
-    Education,
-    Experience,
-    PersonalInfo,
-    Skill,
-)
+from src.python.models import CVData
+
+
+def clean_empty_strings(obj):
+    if isinstance(obj, dict):
+        return {k: None if v == "" else clean_empty_strings(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [clean_empty_strings(x) for x in obj]
+    return obj
 
 
 def sync():
     raw_dir = Path("content")
 
-    # Load personal info
-    with open(raw_dir / "personal_info.yaml", "r") as f:
-        p_info_data = yaml.safe_load(f)
+    data_dict = {
+        path.stem: yaml.safe_load(path.read_text()) for path in raw_dir.glob("*.yaml")
+    }
 
-    # Load profile
-    with open(raw_dir / "profile.typ", "r") as f:
-        p_info_data["profile"] = f.read().strip()
+    data_dict = clean_empty_strings(data_dict)
 
-    personal_info = PersonalInfo(**p_info_data)
+    if (profile_path := raw_dir / "profile.typ").exists():
+        data_dict.setdefault("personal_info", {})["profile"] = (
+            profile_path.read_text().strip()
+        )
 
-    # Load skills
-    with open(raw_dir / "skills.yaml", "r") as f:
-        skills_data = yaml.safe_load(f)
-    skills = [Skill(**s) for s in skills_data]
-
-    # Load experience
-    with open(raw_dir / "experience.yaml", "r") as f:
-        exp_data = yaml.safe_load(f)
-    experience = [Experience(**e) for e in exp_data]
-
-    # Load education
-    with open(raw_dir / "education.yaml", "r") as f:
-        edu_data = yaml.safe_load(f)
-    # Filter out None descriptions to match previous logic or just pass it
-    for e in edu_data:
-        if e.get("description") == "":
-            e["description"] = None
-    education = [Education(**e) for e in edu_data]
-
-    orcid_url = personal_info.orcid
-    orcid_id = orcid_url.split("/")[-1] if orcid_url else ""
-
-    publications = []
-    employments = []
-    if orcid_id:
+    orcid_url = data_dict.get("personal_info", {}).get("orcid", "")
+    if orcid_id := (orcid_url.split("/")[-1] if orcid_url else ""):
         print(f"Fetching publications and employment from ORCID: {orcid_id}...")
         from src.python.sources.orcid import fetch_orcid_data
 
-        publications, employments = fetch_orcid_data(orcid_id)
+        pubs, emps = fetch_orcid_data(orcid_id)
+        data_dict["publications"] = pubs
+        data_dict["employment"] = emps
 
-    cv = CVData(
-        personal_info=personal_info,
-        skills=skills,
-        experience=experience,
-        education=education,
-        publications=publications,
-        employment=employments,
-    )
+    cv = CVData(**data_dict)
 
     adapter = DataAdapter("cv_data.h5")
     adapter.save_cv(cv)

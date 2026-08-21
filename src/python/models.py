@@ -4,8 +4,11 @@ from pydantic import BaseModel
 class PersonalInfo(BaseModel):
     name: str
     email: str
-    github: str
     orcid: str
+    links: dict[str, str] = {}
+    city: str | None = None
+    country: str | None = None
+    timezone: str | None = None
     profile: str
 
 
@@ -45,6 +48,32 @@ class Publication(BaseModel):
     url: str | None = None
 
 
+class Project(BaseModel):
+    name: str
+    description: str
+    technologies: list[str] = []
+    url: str | None = None
+
+
+class Certification(BaseModel):
+    name: str
+    issuer: str
+    date: str
+    url: str | None = None
+
+
+class Conference(BaseModel):
+    name: str
+    role: str
+    date: str
+    location: str | None = None
+
+
+class Language(BaseModel):
+    name: str
+    proficiency: str
+
+
 class CVData(BaseModel):
     personal_info: PersonalInfo
     skills: list[Skill]
@@ -52,3 +81,7 @@ class CVData(BaseModel):
     education: list[Education]
     publications: list[Publication] = []
     employment: list[Employment] = []
+    projects: list[Project] = []
+    certifications: list[Certification] = []
+    conferences: list[Conference] = []
+    languages: list[Language] = []

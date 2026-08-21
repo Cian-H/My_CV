@@ -1,0 +1,4 @@
+- name: "Placeholder Project"
+  description: "A placeholder project description showcasing the architecture."
+  technologies: ["Rust", "TypeScript", "Deno"]
+  url: "https://github.com/placeholder"

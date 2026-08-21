@@ -3,42 +3,32 @@ import json
 import h5py
 import polars as pl
 
-from src.python.models import CVData, Education, Experience, PersonalInfo, Skill
+from src.python.models import CVData
 
 
 class DataAdapter:
     def __init__(self, h5_filepath: str):
         self.h5_filepath = h5_filepath
 
-    def _serialize_experience(self, exp: Experience) -> dict:
-        data = exp.model_dump()
-        data["bullets"] = json.dumps(data["bullets"])
-        return data
-
-    def _deserialize_experience(self, data: dict) -> Experience:
-        data["bullets"] = json.loads(data["bullets"])
-        return Experience(**data)
-
     def save_cv(self, cv: CVData):
-        dfs = {
-            "personal_info": pl.DataFrame([cv.personal_info.model_dump()]),
-            "skills": pl.DataFrame([s.model_dump() for s in cv.skills]),
-            "experience": pl.DataFrame(
-                [self._serialize_experience(e) for e in cv.experience]
-            ),
-            "education": pl.DataFrame([e.model_dump() for e in cv.education]),
-        }
-        if cv.publications:
-            dfs["publications"] = pl.DataFrame(
-                [p.model_dump() for p in cv.publications]
-            )
-        if cv.employment:
-            dfs["employment"] = pl.DataFrame([e.model_dump() for e in cv.employment])
+        dump = cv.model_dump()
+
+        for exp in dump.get("experience", []):
+            exp["bullets"] = json.dumps(exp["bullets"])
+        for proj in dump.get("projects", []):
+            proj["technologies"] = json.dumps(proj["technologies"])
 
         with h5py.File(self.h5_filepath, "w") as f:
-            for name, df in dfs.items():
+            for name, data in dump.items():
+                if not data:
+                    continue
+
+                df_data = [data] if isinstance(data, dict) else data
+                df = pl.DataFrame(df_data)
+
                 if len(df) == 0:
                     continue
+
                 group = f.create_group(name)
                 for col in df.columns:
                     series = df[col]
@@ -49,73 +39,47 @@ class DataAdapter:
                         ]
                         import numpy as np
 
-                        data = np.array(data_list, dtype=object)
+                        data_arr = np.array(data_list, dtype=object)
                         group.create_dataset(
                             col,
-                            data=data,
+                            data=data_arr,
                             dtype=dt,
                             compression="gzip",
                             compression_opts=9,
                         )
                     else:
-                        data = series.to_numpy()
+                        data_arr = series.to_numpy()
                         group.create_dataset(
-                            col,
-                            data=data,
-                            compression="gzip",
-                            compression_opts=9,
+                            col, data=data_arr, compression="gzip", compression_opts=9
                         )
 
     def load_cv(self) -> CVData:
-        dfs = {}
+        data_dump = {}
         with h5py.File(self.h5_filepath, "r") as f:
-            for name in [
-                "personal_info",
-                "skills",
-                "experience",
-                "education",
-                "publications",
-                "employment",
-            ]:
-                if name in f:
-                    group = f[name]
-                    data_dict = {}
-                    for col in group:
-                        ds = group[col]
-                        data = ds[:]
-                        if data.dtype.kind in {"S", "O"}:
-                            data_dict[col] = [
-                                x.decode("utf-8") if isinstance(x, bytes) else str(x)
-                                for x in data
-                            ]
-                        else:
-                            data_dict[col] = data
-                    dfs[name] = pl.DataFrame(data_dict)
+            for name in f:
+                group = f[name]
+                data_dict = {}
+                for col in group:
+                    ds = group[col]
+                    data = ds[:]
+                    if data.dtype.kind in {"S", "O"}:
+                        decoded = [
+                            x.decode("utf-8") if isinstance(x, bytes) else str(x)
+                            for x in data
+                        ]
+                        data_dict[col] = [None if x == "" else x for x in decoded]
+                    else:
+                        data_dict[col] = data
+                data_dump[name] = pl.DataFrame(data_dict).to_dicts()
 
-        personal_info = PersonalInfo(**dfs["personal_info"].to_dicts()[0])
-        skills = [Skill(**s) for s in dfs["skills"].to_dicts()]
-        experience = [
-            self._deserialize_experience(e) for e in dfs["experience"].to_dicts()
-        ]
-        education = [Education(**e) for e in dfs["education"].to_dicts()]
+        if data_dump.get("personal_info"):
+            data_dump["personal_info"] = data_dump["personal_info"][0]
 
-        publications = []
-        if "publications" in dfs:
-            from src.python.models import Publication
+        for exp in data_dump.get("experience", []):
+            if isinstance(exp.get("bullets"), str):
+                exp["bullets"] = json.loads(exp["bullets"])
+        for proj in data_dump.get("projects", []):
+            if isinstance(proj.get("technologies"), str):
+                proj["technologies"] = json.loads(proj["technologies"])
 
-            publications = [Publication(**p) for p in dfs["publications"].to_dicts()]
-
-        employment = []
-        if "employment" in dfs:
-            from src.python.models import Employment
-
-            employment = [Employment(**e) for e in dfs["employment"].to_dicts()]
-
-        return CVData(
-            personal_info=personal_info,
-            skills=skills,
-            experience=experience,
-            education=education,
-            publications=publications,
-            employment=employment,
-        )
+        return CVData(**data_dump)
