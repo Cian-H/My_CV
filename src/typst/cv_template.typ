@@ -1,4 +1,5 @@
-#let cv = json("/build/cv_data.json")
+#let cv_path = sys.inputs.at("cv_data_path", default: "/build/cv_data.json")
+#let cv = json(cv_path)
 
 #set page(margin: (x: 1.5cm, y: 1.5cm))
 #set text(font: "Linux Libertine", size: 10pt)
