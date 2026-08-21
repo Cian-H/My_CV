@@ -1,32 +1,31 @@
-FROM rust:alpine AS builder
+FROM rust:bookworm AS builder
 WORKDIR /app
-RUN apk add --no-cache musl-dev hdf5-dev pkgconfig
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libhdf5-dev pkg-config && \
+    rm -rf /var/lib/apt/lists/*
 
-ENV HDF5_DIR=/usr
+RUN wget -q https://github.com/typst/typst/releases/download/v0.11.1/typst-x86_64-unknown-linux-musl.tar.xz && \
+    tar -xf typst-x86_64-unknown-linux-musl.tar.xz && \
+    mv typst-x86_64-unknown-linux-musl/typst /usr/local/bin/typst && \
+    rm -rf typst*
 
 COPY . /app/
 
 WORKDIR /app/src/rust
 RUN cargo build --release
 
-FROM alpine:latest
+FROM debian:bookworm-slim
 WORKDIR /app
-RUN apk add --no-cache hdf5 curl wget fontconfig
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libhdf5-103-1 fontconfig && \
+    rm -rf /var/lib/apt/lists/*
 
-# Install Typst
-RUN wget https://github.com/typst/typst/releases/download/v0.11.1/typst-x86_64-unknown-linux-musl.tar.xz && \
-    tar -xf typst-x86_64-unknown-linux-musl.tar.xz && \
-    mv typst-x86_64-unknown-linux-musl/typst /usr/local/bin/ && \
-    rm -rf typst*
-
-# Copy the Rust API binary
+COPY --from=builder /usr/local/bin/typst /usr/local/bin/typst
 COPY --from=builder /app/src/rust/target/release/cv-api /app/cv-api
 
-# Copy necessary assets
 COPY cv_data.h5 /app/cv_data.h5
 COPY src/typst /app/src/typst
 
-# Create the build directory for temp files
 RUN mkdir -p /app/build && chmod 777 /app/build
 
 CMD ["/app/cv-api"]
