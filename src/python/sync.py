@@ -3,7 +3,13 @@ from pathlib import Path
 import yaml
 
 from src.python.data_adapter import DataAdapter
-from src.python.models import CVData, Education, Experience, PersonalInfo, Skill
+from src.python.models import (
+    CVData,
+    Education,
+    Experience,
+    PersonalInfo,
+    Skill,
+)
 
 
 def sync():
@@ -38,11 +44,24 @@ def sync():
             e["description"] = None
     education = [Education(**e) for e in edu_data]
 
+    orcid_url = personal_info.orcid
+    orcid_id = orcid_url.split("/")[-1] if orcid_url else ""
+
+    publications = []
+    employments = []
+    if orcid_id:
+        print(f"Fetching publications and employment from ORCID: {orcid_id}...")
+        from src.python.sources.orcid import fetch_orcid_data
+
+        publications, employments = fetch_orcid_data(orcid_id)
+
     cv = CVData(
         personal_info=personal_info,
         skills=skills,
         experience=experience,
         education=education,
+        publications=publications,
+        employment=employments,
     )
 
     adapter = DataAdapter("cv_data.h5")

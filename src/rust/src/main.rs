@@ -94,6 +94,50 @@ async fn get_cv(file: Arc<File>) -> Json<Value> {
         }
     }
 
+    if let Ok(group) = file.group("publications") {
+        if let (Ok(titles), Ok(years), Ok(journals), Ok(dois), Ok(urls)) = (
+            read_string_column(&group, "title"),
+            read_string_column(&group, "year"),
+            read_string_column(&group, "journal"),
+            read_string_column(&group, "doi"),
+            read_string_column(&group, "url"),
+        ) {
+            let mut pubs = Vec::new();
+            for i in 0..titles.len() {
+                pubs.push(json!({
+                    "title": titles[i],
+                    "year": years[i],
+                    "journal": journals[i],
+                    "doi": if dois[i].is_empty() { Value::Null } else { json!(dois[i]) },
+                    "url": if urls[i].is_empty() { Value::Null } else { json!(urls[i]) },
+                }));
+            }
+            cv.insert("publications".to_string(), Value::Array(pubs));
+        }
+    }
+
+    if let Ok(group) = file.group("employment") {
+        if let (Ok(roles), Ok(orgs), Ok(depts), Ok(starts), Ok(ends)) = (
+            read_string_column(&group, "role"),
+            read_string_column(&group, "organization"),
+            read_string_column(&group, "department"),
+            read_string_column(&group, "start_date"),
+            read_string_column(&group, "end_date"),
+        ) {
+            let mut emps = Vec::new();
+            for i in 0..roles.len() {
+                emps.push(json!({
+                    "role": roles[i],
+                    "organization": orgs[i],
+                    "department": if depts[i].is_empty() { Value::Null } else { json!(depts[i]) },
+                    "start_date": starts[i],
+                    "end_date": if ends[i].is_empty() { Value::Null } else { json!(ends[i]) },
+                }));
+            }
+            cv.insert("employment".to_string(), Value::Array(emps));
+        }
+    }
+
     Json(Value::Object(cv))
 }
 

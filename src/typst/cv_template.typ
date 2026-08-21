@@ -47,13 +47,21 @@
 
 == EMPLOYMENT EXPERIENCE
 
-#for exp in cv.experience [
-  #strong[#exp.organization#if exp.location != none [, #exp.location]] \
-  #strong[#exp.title], #exp.date
-  #for bullet in exp.bullets [
-    - #bullet
+#if cv.experience.len() > 0 [
+  #for exp in cv.experience [
+    #strong[#exp.organization#if exp.location != none [, #exp.location]] \
+    #strong[#exp.title], #exp.date
+    #for bullet in exp.bullets [
+      - #bullet
+    ]
+    #v(0.5em)
   ]
-  #v(0.5em)
+] else if "employment" in cv and cv.employment.len() > 0 [
+  #for emp in cv.employment [
+    #strong[#emp.organization#if emp.department != none [, #emp.department]] \
+    #strong[#emp.role], #emp.start_date - #if emp.end_date != none [#emp.end_date] else [Present]
+    #v(0.5em)
+  ]
 ]
 
 #v(1em)
@@ -71,3 +79,21 @@
     ))
     .flatten()
 )
+
+#if "publications" in cv and cv.publications.len() > 0 [
+  #v(1em)
+
+  == PUBLICATIONS
+
+  #for pub in cv.publications [
+    #strong[#pub.title] \
+    #pub.journal, #pub.year 
+    #if pub.doi != none and pub.doi != "" [
+      | #link("https://doi.org/" + pub.doi)[DOI]
+    ]
+    #if pub.url != none and pub.url != "" [
+      | #link(pub.url)[Link]
+    ]
+    #v(0.5em)
+  ]
+]

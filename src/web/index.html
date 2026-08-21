@@ -53,20 +53,30 @@
                     </p>
                     <p>${cv.personal_info.profile}</p>
 
-                    <h2>Experience</h2>
-                `;
-
-          cv.experience.forEach((exp) => {
-            html += `
-                        <div class="exp-item">
-                            <h3>${exp.title} - ${exp.organization}</h3>
-                            <p class="meta">${exp.date} | ${exp.location}</p>
-                            <ul>
-                                ${exp.bullets.map((b) => `<li>${b}</li>`).join("")}
-                            </ul>
-                        </div>
                     `;
-          });
+          html += `<h2>Experience</h2>`;
+          if (cv.experience && cv.experience.length > 0) {
+            cv.experience.forEach((exp) => {
+              html += `
+                          <div class="exp-item">
+                              <h3>${exp.title} - ${exp.organization}</h3>
+                              <p class="meta">${exp.date} | ${exp.location}</p>
+                              <ul>
+                                  ${exp.bullets.map((b) => `<li>${b}</li>`).join("")}
+                              </ul>
+                          </div>
+                      `;
+            });
+          } else if (cv.employment && cv.employment.length > 0) {
+            cv.employment.forEach((emp) => {
+              html += `
+                          <div class="exp-item">
+                              <h3>${emp.role} - ${emp.organization}</h3>
+                              <p class="meta">${emp.start_date} - ${emp.end_date || "Present"} | ${emp.department || ""}</p>
+                          </div>
+                      `;
+            });
+          }
 
           html += `<h2>Education</h2>`;
           cv.education.forEach((edu) => {
@@ -78,6 +88,18 @@
                         </div>
                     `;
           });
+
+          if (cv.publications && cv.publications.length > 0) {
+            html += `<h2>Publications</h2>`;
+            cv.publications.forEach((pub) => {
+              html += `
+                          <div class="exp-item">
+                              <h3>${pub.title}</h3>
+                              <p class="meta">${pub.year} | ${pub.journal} ${pub.doi ? `| <a href="https://doi.org/${pub.doi}">DOI</a>` : ""} ${pub.url ? `| <a href="${pub.url}">Link</a>` : ""}</p>
+                          </div>
+                      `;
+            });
+          }
 
           document.getElementById("cv-content").innerHTML = html;
         } catch (e) {
