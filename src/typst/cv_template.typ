@@ -9,9 +9,12 @@
 #align(center)[
   #text(size: 20pt, weight: "bold", fill: rgb("1C4587"))[#cv.personal_info.name]
 
-  *Email:* #cv.personal_info.email | *Github:* #cv.personal_info.github
-
-  *ORCID:* #link(cv.personal_info.orcid)
+  *Email:* #cv.personal_info.email
+  #if "orcid" in cv.personal_info [ | *ORCID:* #link(cv.personal_info.orcid)[#cv.personal_info.orcid.replace("https://orcid.org/", "")]]
+  
+  #if "links" in cv.personal_info and cv.personal_info.links.len() > 0 [
+    #cv.personal_info.links.map(l => [*#l.name:* #link(l.url)[#l.url.replace("https://", "").replace("http://", "")]]).join(" | ")
+  ]
 ]
 
 #v(1em)
@@ -21,6 +24,7 @@
 
 #v(1em)
 
+#if "skills" in cv [
 == SKILLS
 
 #grid(
@@ -46,9 +50,12 @@
 
 #v(1em)
 
+]
+
+#if "experience" in cv or "employment" in cv [
 == EMPLOYMENT EXPERIENCE
 
-#if cv.experience.len() > 0 [
+#if "experience" in cv and cv.experience.len() > 0 [
   #for exp in cv.experience [
     #strong[#exp.organization#if exp.location != none [, #exp.location]] \
     #strong[#exp.title], #exp.date
@@ -67,6 +74,9 @@
 
 #v(1em)
 
+]
+
+#if "education" in cv [
 == EDUCATION
 
 #grid(
@@ -80,6 +90,8 @@
     ))
     .flatten()
 )
+
+]
 
 #if "publications" in cv and cv.publications.len() > 0 [
   #v(1em)

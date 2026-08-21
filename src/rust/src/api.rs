@@ -37,7 +37,7 @@ async fn get_cv_pdf(
 
     // the working directory for the api is usually the project root or src/rust
     // We assume we are running from project root (since devenv shell does)
-    let _ = std::process::Command::new("typst")
+    let output = std::process::Command::new("typst")
         .arg("compile")
         .arg("--root")
         .arg(".")
@@ -45,7 +45,11 @@ async fn get_cv_pdf(
         .arg(format!("cv_data_path={}", temp_json_typst))
         .arg("src/typst/cv_template.typ")
         .arg(&temp_pdf)
-        .output();
+        .output()
+        .expect("Failed to execute typst");
+        
+    let _ = std::fs::write(format!("build/typst_error_{}.txt", uuid), &output.stderr);
+    let _ = std::fs::write(format!("build/typst_stdout_{}.txt", uuid), &output.stdout);
 
     let pdf = std::fs::read(&temp_pdf).unwrap_or_default();
 
