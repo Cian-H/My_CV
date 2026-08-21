@@ -18,10 +18,11 @@ def sync_cmd():
 
 
 @app.command(name="build-static")
-def generate_static_cmd():
-    """Generate the static PDF CV into the build/ directory."""
+def generate_static_cmd(exclude: str = ""):
+    """Generate the static PDF CV into the build/ directory. Use --exclude to comma-separate sections to exclude."""
     print("Generating static CV...")
-    generate_static()
+    excludes = [e.strip() for e in exclude.split(",")] if exclude else None
+    generate_static(excludes)
 
 
 @app.command(name="build-frontend")

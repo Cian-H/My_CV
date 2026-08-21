@@ -3,13 +3,20 @@ import subprocess
 from src.python.data_adapter import DataAdapter
 
 
-def generate_static():
+def generate_static(excludes: list[str] | None = None):
     adapter = DataAdapter("cv_data.h5")
     cv_data = adapter.load_cv()
 
+    cv_dict = cv_data.model_dump(exclude_none=True)
+    if excludes:
+        for exc in excludes:
+            cv_dict.pop(exc, None)
+
     json_path = "build/cv_data.json"
     with open(json_path, "w") as f:
-        f.write(cv_data.model_dump_json(indent=2))
+        import json
+
+        f.write(json.dumps(cv_dict, indent=2))
 
     print("Compiling Typst PDF...")
     try:
