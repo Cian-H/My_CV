@@ -2,30 +2,30 @@ name: Cian Hughes
 email: chughes000@gmail.com
 orcid: https://orcid.org/0000-0002-4863-733X
 links:
-- name: GitHub
-  url: https://github.com/Cian-H
-  icon: https://cdn.simpleicons.org/github
-- name: GitLab
-  url: https://gitlab.com/Cian-H
-  icon: https://cdn.simpleicons.org/gitlab
-- name: Gitea
-  url: https://gitea.bulba.space
-  icon: https://cdn.simpleicons.org/gitea
-- name: Blog
-  url: https://blog.bulba.space
-  icon: https://cdn.simpleicons.org/rss
-- name: Google Scholar
-  url: https://scholar.google.com/citations?user=PLACEHOLDER
-  icon: https://cdn.simpleicons.org/googlescholar
-- name: Semantic Scholar
-  url: https://www.semanticscholar.org/author/Cian-Hughes/1706865947
-  icon: https://cdn.simpleicons.org/semanticscholar
-- name: ResearchGate
-  url: https://www.researchgate.net/profile/Cian-Hughes?ev=hdr_xprf
-  icon: https://cdn.simpleicons.org/researchgate
-- name: LinkedIn
-  url: https://linkedin.com/in/placeholder
-  icon: https://unpkg.com/simple-icons@11.14.0/icons/linkedin.svg
+  - name: GitHub
+    url: https://github.com/Cian-H
+    icon: https://cdn.simpleicons.org/github
+  - name: GitLab
+    url: https://gitlab.com/Cian-H
+    icon: https://cdn.simpleicons.org/gitlab
+  - name: Gitea
+    url: https://gitea.bulba.space
+    icon: https://cdn.simpleicons.org/gitea
+  - name: Blog
+    url: https://blog.bulba.space
+    icon: https://cdn.simpleicons.org/rss
+  - name: Google Scholar
+    url: https://scholar.google.com/citations?user=PLACEHOLDER
+    icon: https://cdn.simpleicons.org/googlescholar
+  - name: Semantic Scholar
+    url: https://www.semanticscholar.org/author/Cian-Hughes/1706865947
+    icon: https://cdn.simpleicons.org/semanticscholar
+  - name: ResearchGate
+    url: https://www.researchgate.net/profile/Cian-Hughes?ev=hdr_xprf
+    icon: https://cdn.simpleicons.org/researchgate
+  - name: LinkedIn
+    url: https://linkedin.com/in/placeholder
+    icon: https://unpkg.com/simple-icons@11.14.0/icons/linkedin.svg
 city: Placeholder City
 country: Placeholder Country
 timezone: UTC
