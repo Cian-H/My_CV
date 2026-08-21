@@ -92,3 +92,10 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+@app.command(name="test-api")
+def test_api():
+    """Run the Rust API unit tests."""
+    print("Running Rust API tests...")
+    subprocess.run(["cargo", "test"], cwd="src/rust", check=True)

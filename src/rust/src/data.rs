@@ -1,6 +1,6 @@
-use hdf5::File;
-use serde_json::{json, Map, Value};
 use anyhow::Result;
+use hdf5::File;
+use serde_json::{Map, Value, json};
 
 fn read_string_column(group: &hdf5::Group, name: &str) -> Result<Vec<String>, hdf5::Error> {
     let ds = group.dataset(name)?;
@@ -146,4 +146,36 @@ pub fn read_cv(path: &str) -> Result<Value> {
     }
 
     Ok(Value::Object(cv))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_read_cv_from_real_file() {
+        // The test runs from `src/rust/`, so the lockfile is two dirs up
+        let path = "../../cv_data.h5";
+
+        // Only run the test if the file actually exists
+        if std::path::Path::new(path).exists() {
+            let result = read_cv(path);
+            assert!(
+                result.is_ok(),
+                "Failed to parse cv_data.h5: {:?}",
+                result.err()
+            );
+
+            let cv = result.unwrap();
+            assert!(cv.is_object());
+            let obj = cv.as_object().unwrap();
+
+            // Check that it successfully extracted the key sections
+            assert!(obj.contains_key("personal_info"));
+            assert!(obj.contains_key("publications"));
+            assert!(obj.contains_key("employment"));
+        } else {
+            println!("Skipping HDF5 parse test because ../../cv_data.h5 does not exist");
+        }
+    }
 }
