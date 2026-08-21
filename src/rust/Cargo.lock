@@ -623,6 +623,7 @@ dependencies = [
  "tower-http",
  "typst",
  "typst-pdf",
+ "uuid",
 ]
 
 [[package]]

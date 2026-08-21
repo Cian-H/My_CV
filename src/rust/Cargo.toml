@@ -18,6 +18,7 @@ typst = "0.15.1"
 typst-pdf = "0.15.1"
 chrono = "0.4.45"
 fontdb = "0.24.0"
+uuid = { version = "1.24.1", features = ["v4"] }
 
 [dev-dependencies]
 http-body-util = "0.1.5"

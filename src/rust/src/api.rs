@@ -1,4 +1,3 @@
-use crate::typst_world::MinimalWorld;
 use axum::{
     Json, Router,
     extract::{Query, State},
@@ -6,7 +5,6 @@ use axum::{
     response::IntoResponse,
     routing::get,
 };
-use minijinja::Environment;
 use serde::Deserialize;
 use serde_json::Value;
 use std::sync::Arc;
@@ -28,19 +26,30 @@ async fn get_cv_pdf(
     let data = cv.read().await.clone();
     let filtered = filter_cv(data, &query);
 
-    // 1. Template
-    let mut env = Environment::new();
-    let tmpl_str = include_str!("../templates/cv.typ");
-    env.add_template("cv", tmpl_str).unwrap();
-    let tmpl = env.get_template("cv").unwrap();
-    let rendered = tmpl
-        .render(&filtered)
-        .unwrap_or_else(|e| format!("Template error: {}", e));
+    // 1. Save filtered JSON to a temp file
+    let temp_json = format!("/tmp/cv_filtered_{}.json", uuid::Uuid::new_v4());
+    let _ = std::fs::write(&temp_json, serde_json::to_string(&filtered).unwrap());
 
-    // 2. Compile Typst
-    let world = MinimalWorld::new(rendered);
-    let document = typst::compile(&world).output.unwrap();
-    let pdf = typst_pdf::pdf(&document, &typst_pdf::PdfOptions::default()).unwrap();
+    // 2. Compile via CLI using the main template
+    let temp_pdf = format!("/tmp/cv_out_{}.pdf", uuid::Uuid::new_v4());
+
+    // the working directory for the api is usually the project root or src/rust
+    // We assume we are running from project root (since devenv shell does)
+    let _ = std::process::Command::new("typst")
+        .arg("compile")
+        .arg("--root")
+        .arg(".")
+        .arg("--input")
+        .arg(format!("cv_data_path={}", temp_json))
+        .arg("src/typst/cv_template.typ")
+        .arg(&temp_pdf)
+        .output();
+
+    let pdf = std::fs::read(&temp_pdf).unwrap_or_default();
+
+    // cleanup
+    let _ = std::fs::remove_file(&temp_json);
+    let _ = std::fs::remove_file(&temp_pdf);
 
     ([(header::CONTENT_TYPE, "application/pdf")], pdf)
 }

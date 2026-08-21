@@ -155,6 +155,96 @@ pub fn read_cv(path: &str) -> Result<Value> {
         }
     }
 
+    if let Ok(group) = file.group("projects") {
+        match (
+            read_string_column(&group, "name"),
+            read_string_column(&group, "description"),
+            read_string_column(&group, "technologies"),
+            read_string_column(&group, "url"),
+        ) {
+            (Ok(names), Ok(descs), Ok(techs), Ok(urls)) => {
+                let mut projs = Vec::new();
+                for i in 0..names.len() {
+                    let tech_val: Value =
+                        serde_json::from_str(&techs[i]).unwrap_or_else(|_| json!([]));
+                    projs.push(json!({
+                        "name": names[i],
+                        "description": descs[i],
+                        "technologies": tech_val,
+                        "url": if urls[i].is_empty() { Value::Null } else { json!(urls[i]) }
+                    }));
+                }
+                cv.insert("projects".to_string(), Value::Array(projs));
+            }
+            err => println!("Projects error: {:?}", err),
+        }
+    }
+
+    if let Ok(group) = file.group("certifications") {
+        match (
+            read_string_column(&group, "name"),
+            read_string_column(&group, "issuer"),
+            read_string_column(&group, "date"),
+            read_string_column(&group, "url"),
+        ) {
+            (Ok(names), Ok(issuers), Ok(dates), Ok(urls)) => {
+                let mut certs = Vec::new();
+                for i in 0..names.len() {
+                    certs.push(json!({
+                        "name": names[i],
+                        "issuer": issuers[i],
+                        "date": dates[i],
+                        "url": if urls[i].is_empty() { Value::Null } else { json!(urls[i]) }
+                    }));
+                }
+                cv.insert("certifications".to_string(), Value::Array(certs));
+            }
+            err => println!("Certifications error: {:?}", err),
+        }
+    }
+
+    if let Ok(group) = file.group("conferences") {
+        match (
+            read_string_column(&group, "name"),
+            read_string_column(&group, "role"),
+            read_string_column(&group, "date"),
+            read_string_column(&group, "location"),
+        ) {
+            (Ok(names), Ok(roles), Ok(dates), Ok(locs)) => {
+                let mut confs = Vec::new();
+                for i in 0..names.len() {
+                    confs.push(json!({
+                        "name": names[i],
+                        "role": roles[i],
+                        "date": dates[i],
+                        "location": if locs[i].is_empty() { Value::Null } else { json!(locs[i]) }
+                    }));
+                }
+                cv.insert("conferences".to_string(), Value::Array(confs));
+            }
+            err => println!("Conferences error: {:?}", err),
+        }
+    }
+
+    if let Ok(group) = file.group("languages") {
+        match (
+            read_string_column(&group, "name"),
+            read_string_column(&group, "proficiency"),
+        ) {
+            (Ok(names), Ok(profs)) => {
+                let mut langs = Vec::new();
+                for i in 0..names.len() {
+                    langs.push(json!({
+                        "name": names[i],
+                        "proficiency": profs[i]
+                    }));
+                }
+                cv.insert("languages".to_string(), Value::Array(langs));
+            }
+            err => println!("Languages error: {:?}", err),
+        }
+    }
+
     Ok(Value::Object(cv))
 }
 
