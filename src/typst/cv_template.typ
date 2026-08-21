@@ -7,9 +7,9 @@
 
 #align(center)[
   #text(size: 20pt, weight: "bold", fill: rgb("1C4587"))[#cv.personal_info.name]
-  
+
   *Email:* #cv.personal_info.email | *Github:* #cv.personal_info.github
-  
+
   *ORCID:* #link(cv.personal_info.orcid)
 ]
 
@@ -40,7 +40,7 @@
         - #skill.description
       ]
     }
-  ]
+  ],
 )
 
 #v(1em)
@@ -63,8 +63,11 @@
 #grid(
   columns: (1fr, 4fr),
   gutter: 10pt,
-  ..cv.education.map(edu => (
-    [*#edu.date*],
-    [#edu.degree, #edu.institution #if edu.description != none and edu.description != "" [\ #edu.description]]
-  )).flatten()
+  ..cv
+    .education
+    .map(edu => (
+      [*#edu.date*],
+      [#edu.degree, #edu.institution #if edu.description != none and edu.description != "" [\ #edu.description]],
+    ))
+    .flatten()
 )

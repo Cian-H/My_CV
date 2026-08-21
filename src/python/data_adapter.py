@@ -2,6 +2,7 @@ import json
 
 import h5py
 import polars as pl
+
 from src.python.models import CVData, Education, Experience, PersonalInfo, Skill
 
 
@@ -62,16 +63,17 @@ class DataAdapter:
         dfs = {}
         with h5py.File(self.h5_filepath, "r") as f:
             for name in ["personal_info", "skills", "experience", "education"]:
-                group = f[name]
-                data_dict = {}
-                for col in group.keys():
-                    ds = group[col]
-                    data = ds[:]
-                    if data.dtype.kind == "S":
-                        data_dict[col] = [x.decode("utf-8") for x in data]
-                    else:
-                        data_dict[col] = data
-                dfs[name] = pl.DataFrame(data_dict)
+                if name in f:
+                    group = f[name]
+                    data_dict = {}
+                    for col in group:
+                        ds = group[col]
+                        data = ds[:]
+                        if data.dtype.kind == "S":
+                            data_dict[col] = [x.decode("utf-8") for x in data]
+                        else:
+                            data_dict[col] = data
+                    dfs[name] = pl.DataFrame(data_dict)
 
         personal_info = PersonalInfo(**dfs["personal_info"].to_dicts()[0])
         skills = [Skill(**s) for s in dfs["skills"].to_dicts()]

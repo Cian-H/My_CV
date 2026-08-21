@@ -12,7 +12,7 @@
   organization: "Dublin City University"
   location: "Dublin, Ireland"
   bullets:
-    - "Research as part of a joint Fraunhofer Institute and I-Form research centre project, on the topic of \"Novel Fabrication Methods for Protein Digestion Based Biosensors\""
+    - 'Research as part of a joint Fraunhofer Institute and I-Form research centre project, on the topic of "Novel Fabrication Methods for Protein Digestion Based Biosensors"'
     - "Developed a new method for fabricating biosensor electrodes to be used in protein digestion based sensors"
     - "Designed method using metal 3d printing and Electrochemical Impedance Spectroscopy (EIS) as basis for a biosensor"
     - "Further developed internal libraries for data handling/analysis"
@@ -21,7 +21,7 @@
   organization: "Dublin City University"
   location: "Dublin, Ireland"
   bullets:
-    - "Lead Researcher as part of the I-Form research centre, on the topic of \"Improved Methodology for Closed Loop Control in AM\""
+    - 'Lead Researcher as part of the I-Form research centre, on the topic of "Improved Methodology for Closed Loop Control in AM"'
     - "Responsible for development of data acquisition/handling tools for laser powder bed fusion based metal 3d printing"
     - "Tested various in-situ methods such as ultrasonic monitoring"
     - "Implemented internal libraries for big data handling, analysis and computations on HPC cluster. Built on top of libraries such as dask, using optimised rust code via FFI bindings."

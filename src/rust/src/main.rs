@@ -1,3 +1,6 @@
+#![allow(clippy::collapsible_if)]
+#![allow(clippy::useless_conversion)]
+
 use axum::{Json, Router, routing::get};
 use hdf5::File;
 use serde_json::{Map, Value, json};
