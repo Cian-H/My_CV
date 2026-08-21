@@ -1,6 +1,6 @@
 [package]
 name = "cv-api"
-version = "2026.8.24"
+version = "2026.8.25"
 edition = "2024"
 
 [dependencies]
