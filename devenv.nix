@@ -5,6 +5,7 @@
 }: {
   env.HDF5_DIR = "${config.env.DEVENV_ROOT}/.devenv/profile";
   env.RUSTFLAGS = "-C link-args=-Wl,-rpath,${config.env.DEVENV_ROOT}/.devenv/profile/lib";
+  env.LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib ];
 
   packages = [
     pkgs.cargo

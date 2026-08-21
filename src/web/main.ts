@@ -164,7 +164,7 @@ async function renderCV() {
       excludes.push("projects", "certifications");
     }
 
-    let url = "http://127.0.0.1:3000/api/cv.bson";
+    let url = "/api/cv.bson";
     if (excludes.length > 0) {
       url += "?exclude=" + excludes.join(",");
     }
@@ -691,7 +691,7 @@ document.addEventListener("DOMContentLoaded", () => {
         excludes.push("projects", "certifications");
       }
 
-      let url = "http://127.0.0.1:3000/api/cv.pdf";
+      let url = "/api/cv.pdf";
       if (excludes.length > 0) {
         url += "?exclude=" + excludes.join(",");
       }
