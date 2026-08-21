@@ -17,6 +17,10 @@ class DataAdapter:
             exp["bullets"] = json.dumps(exp["bullets"])
         for proj in dump.get("projects", []):
             proj["technologies"] = json.dumps(proj["technologies"])
+        if "personal_info" in dump:
+            dump["personal_info"]["links"] = json.dumps(
+                dump["personal_info"].get("links", [])
+            )
 
         with h5py.File(self.h5_filepath, "w") as f:
             for name, data in dump.items():
@@ -81,5 +85,11 @@ class DataAdapter:
         for proj in data_dump.get("projects", []):
             if isinstance(proj.get("technologies"), str):
                 proj["technologies"] = json.loads(proj["technologies"])
+        if "personal_info" in data_dump and isinstance(
+            data_dump["personal_info"].get("links"), str
+        ):
+            data_dump["personal_info"]["links"] = json.loads(
+                data_dump["personal_info"]["links"]
+            )
 
         return CVData(**data_dump)

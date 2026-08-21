@@ -1,11 +1,17 @@
 from pydantic import BaseModel
 
 
+class Link(BaseModel):
+    name: str
+    url: str
+    icon: str | None = None
+
+
 class PersonalInfo(BaseModel):
     name: str
     email: str
     orcid: str
-    links: dict[str, str] = {}
+    links: list[Link] = []
     city: str | None = None
     country: str | None = None
     timezone: str | None = None
