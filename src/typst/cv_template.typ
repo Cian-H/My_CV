@@ -11,6 +11,9 @@
 
   *Email:* #cv.personal_info.email
   #if (
+    "city" in cv.personal_info and "country" in cv.personal_info
+  ) [ | *Location:* #cv.personal_info.city, #cv.personal_info.country]
+  #if (
     "orcid" in cv.personal_info
   ) [ | *ORCID:* #link(cv.personal_info.orcid)[#cv.personal_info.orcid.replace("https://orcid.org/", "")]]
 
@@ -96,7 +99,7 @@
       .education
       .map(edu => (
         [*#edu.date*],
-        [#edu.degree, #edu.institution #if edu.description != none and edu.description != "" [\ #edu.description]],
+        [#edu.degree, #edu.institution #if "description" in edu and edu.description != none and edu.description != "" [\ #edu.description]],
       ))
       .flatten()
   )
@@ -111,10 +114,10 @@
   #for pub in cv.publications [
     #strong[#pub.title] \
     #pub.journal, #pub.year
-    #if pub.doi != none and pub.doi != "" [
+    #if "doi" in pub and pub.doi != none and pub.doi != "" [
       | #link("https://doi.org/" + pub.doi)[DOI]
     ]
-    #if pub.url != none and pub.url != "" [
+    #if "url" in pub and pub.url != none and pub.url != "" [
       | #link(pub.url)[Link]
     ]
     #v(0.5em)
