@@ -22,18 +22,21 @@
           <strong>Options</strong>
         </div>
         <div class="action-buttons">
-          <select id="theme-selector" class="btn">
-            <option value="auto">Auto (System)</option>
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-            <option value="solarized-light">Solarized Light</option>
-            <option value="solarized-dark">Solarized Dark</option>
-            <option value="dracula">Dracula</option>
-            <option value="monokai">Monokai</option>
-          </select>
           <button id="download-pdf" class="btn btn-primary">
             Download PDF
           </button>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label for="theme-selector" style="font-weight: 600;">Theme:</label>
+            <select id="theme-selector" class="btn" style="flex-grow: 1;">
+              <option value="auto">Auto (System)</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+              <option value="solarized-light">Solarized Light</option>
+              <option value="solarized-dark">Solarized Dark</option>
+              <option value="dracula">Dracula</option>
+              <option value="monokai">Monokai</option>
+            </select>
+          </div>
         </div>
         <div class="options-list">
           <label
