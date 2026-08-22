@@ -21,13 +21,13 @@
         <div class="controls-header">
           <strong>Options</strong>
         </div>
-        <div class="action-buttons">
-          <button id="download-pdf" class="btn btn-primary">
+        <div class="action-buttons" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+          <button id="download-pdf" class="btn btn-primary" style="width: 100%;">
             Download PDF
           </button>
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <label for="theme-selector" style="font-weight: 600;">Theme:</label>
-            <select id="theme-selector" class="btn" style="flex-grow: 1;">
+          <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; width: 100%;">
+            <label for="theme-selector" style="font-weight: 600; margin: 0;">Theme:</label>
+            <select id="theme-selector" class="btn" style="flex-grow: 1; margin-left: 10px;">
               <option value="auto">Auto (System)</option>
               <option value="light">Light</option>
               <option value="dark">Dark</option>
