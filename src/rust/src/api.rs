@@ -57,7 +57,11 @@ async fn get_cv_pdf(
     let _ = std::fs::remove_file(&temp_json_fs);
     let _ = std::fs::remove_file(&temp_pdf);
 
-    ([(header::CONTENT_TYPE, "application/pdf")], pdf)
+    ([(
+        header::CONTENT_TYPE, "application/pdf"
+    ), (
+        header::CONTENT_DISPOSITION, "attachment; filename=\"Cian_Hughes_CV.pdf\""
+    )], pdf)
 }
 
 #[derive(Deserialize)]
