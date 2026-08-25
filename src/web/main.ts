@@ -1024,33 +1024,47 @@ document.addEventListener("DOMContentLoaded", () => {
       if (toggleCat.checked) {
         if (!catInterval) {
           catInterval = globalThis.setInterval(() => {
-            if (Math.random() < 0.4 && cats.length < 8) {
+            if (Math.random() < 0.8 && cats.length < 35) {
               const cat = document.createElement("div");
               cat.textContent = "🐈";
               cat.style.position = "fixed";
-              cat.style.fontSize = "32px";
+              const size = Math.floor(Math.random() * 24 + 20); // 20px to 44px
+              cat.style.fontSize = size + "px";
               cat.style.zIndex = "9998";
               const startLeft = Math.random() > 0.5;
-              cat.style.top = Math.floor(Math.random() * 90) + "vh";
-              cat.style.left = startLeft ? "-50px" : "105vw";
-              cat.style.transform = startLeft ? "scaleX(-1)" : "scaleX(1)";
-              cat.style.transition = "left 10s linear";
+              const startY = Math.random() * 90;
+              const duration = 2.5 + Math.random() * 3.5; // 2.5s to 6s
+
+              cat.style.top = startY + "vh";
+              cat.style.left = startLeft ? "-100px" : "110vw";
+
+              const startRot = Math.random() * 360;
+              const endRot = startRot + (Math.random() * 1080 - 540); // Spin up to 1.5 times
+              const scale = startLeft ? "-1, 1" : "1, 1";
+
+              cat.style.transform = `scale(${scale}) rotate(${startRot}deg)`;
+              cat.style.transition =
+                `left ${duration}s linear, top ${duration}s linear, transform ${duration}s linear`;
               cat.style.pointerEvents = "none";
               document.body.appendChild(cat);
               cats.push(cat);
 
               requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                  cat.style.left = startLeft ? "105vw" : "-50px";
+                  cat.style.left = startLeft ? "110vw" : "-100px";
+                  const endY = startY + (Math.random() * 60 - 30); // Drift up or down
+                  cat.style.top = endY + "vh";
+                  cat.style.transform = `scale(${scale}) rotate(${endRot}deg)`;
                 });
               });
 
               setTimeout(() => {
                 cat.remove();
-                cats.splice(cats.indexOf(cat), 1);
-              }, 10500);
+                const index = cats.indexOf(cat);
+                if (index > -1) cats.splice(index, 1);
+              }, duration * 1000 + 500);
             }
-          }, 1500);
+          }, 250);
         }
       } else {
         if (catInterval) clearInterval(catInterval);
