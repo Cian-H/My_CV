@@ -17,7 +17,7 @@ interface PersonalInfo {
   city?: string;
   country?: string;
   timezone?: string;
-  profiles: Record<string, {text: string, exclude: string[]}>;
+  profiles: Record<string, { text: string; exclude: string[] }>;
 }
 
 interface Skill {
@@ -166,7 +166,10 @@ async function renderCV() {
       excludes.push("projects", "certifications");
     }
 
-    let url = (window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost") ? "http://127.0.0.1:3000/api/cv.bson" : "/api/cv.bson";
+    let url = (window.location.hostname === "127.0.0.1" ||
+        window.location.hostname === "localhost")
+      ? "http://127.0.0.1:3000/api/cv.bson"
+      : "/api/cv.bson";
     if (excludes.length > 0) {
       url += "?exclude=" + excludes.join(",");
     }
@@ -283,8 +286,12 @@ async function renderCV() {
     }
     cvContent.appendChild(linkContainer);
 
-    const profileMode = (document.getElementById("profile-selector") as HTMLSelectElement)?.value || "general";
-    const profData = pi.profiles[profileMode] || pi.profiles["general"] || pi.profiles["default"] || Object.values(pi.profiles)[0] || {text: "", exclude: []};
+    const profileMode =
+      (document.getElementById("profile-selector") as HTMLSelectElement)
+        ?.value || "general";
+    const profData = pi.profiles[profileMode] || pi.profiles["general"] ||
+      pi.profiles["default"] || Object.values(pi.profiles)[0] ||
+      { text: "", exclude: [] };
     cvContent.appendChild(el("p", "", profData.text || ""));
 
     // --- Experience / Employment ---
@@ -348,17 +355,21 @@ async function renderCV() {
 
       // Render filter buttons
       let activeFilters: Set<string> = new Set();
-let activeCategories: Set<string> = new Set();
-let currentProfiles: Record<string, {text: string, exclude: string[]}> = {};
+      let activeCategories: Set<string> = new Set();
+      let currentProfiles: Record<string, { text: string; exclude: string[] }> =
+        {};
       const projectItems: { element: HTMLElement; techs: string[] }[] = [];
       const filterButtons: HTMLElement[] = [];
 
       const updateFilters = () => {
         for (const btn of filterButtons) {
-          const isTechMatch = btn.dataset.tech && activeFilters.has(btn.dataset.tech);
-          const isCatMatch = btn.dataset.category && activeCategories.has(btn.dataset.category);
-          const isAllMatch = btn.dataset.tech === "All" && activeFilters.size === 0 && activeCategories.size === 0;
-          
+          const isTechMatch = btn.dataset.tech &&
+            activeFilters.has(btn.dataset.tech);
+          const isCatMatch = btn.dataset.category &&
+            activeCategories.has(btn.dataset.category);
+          const isAllMatch = btn.dataset.tech === "All" &&
+            activeFilters.size === 0 && activeCategories.size === 0;
+
           if (isTechMatch || isCatMatch || isAllMatch) {
             btn.style.background = "var(--text-color)";
             btn.style.color = "var(--bg-color)";
@@ -380,17 +391,17 @@ let currentProfiles: Record<string, {text: string, exclude: string[]}> = {};
                 break;
               }
             }
-            
+
             if (!passed) {
               for (const cat of activeCategories) {
                 const catTechs = hierarchy[cat] || [];
-                if (item.techs.some(t => catTechs.includes(t))) {
+                if (item.techs.some((t) => catTechs.includes(t))) {
                   passed = true;
                   break;
                 }
               }
             }
-            
+
             item.element.style.display = passed ? "block" : "none";
           }
         }
@@ -401,14 +412,14 @@ let currentProfiles: Record<string, {text: string, exclude: string[]}> = {};
         btn.dataset.tech = techValue || "All";
         btn.onclick = () => {
           if (techValue === null) {
-              activeFilters.clear();
-              activeCategories.clear();
+            activeFilters.clear();
+            activeCategories.clear();
           } else {
-              if (activeFilters.has(techValue)) {
-                  activeFilters.delete(techValue);
-              } else {
-                  activeFilters.add(techValue);
-              }
+            if (activeFilters.has(techValue)) {
+              activeFilters.delete(techValue);
+            } else {
+              activeFilters.add(techValue);
+            }
           }
           updateFilters();
         };
@@ -417,7 +428,7 @@ let currentProfiles: Record<string, {text: string, exclude: string[]}> = {};
 
       filterContainer.style.flexDirection = "column";
       filterContainer.style.gap = "10px";
-      
+
       const allRow = el("div");
       allRow.style.marginBottom = "8px";
       const allBtn = createFilterBtn("All", null);
@@ -427,27 +438,31 @@ let currentProfiles: Record<string, {text: string, exclude: string[]}> = {};
 
       const hierarchy = cv.project_hierarchy || {};
       const usedTechs = new Set(sortedTechs);
-      
-      const createCatSection = (category: string, relevantTechs: string[], isOther: boolean) => {
+
+      const createCatSection = (
+        category: string,
+        relevantTechs: string[],
+        isOther: boolean,
+      ) => {
         const wrap = el("div");
-        
+
         const catBtn = el("button", "btn");
         catBtn.style.fontWeight = "bold";
         catBtn.style.width = "100%";
         catBtn.style.textAlign = "left";
         catBtn.style.display = "flex";
         catBtn.style.justifyContent = "space-between";
-        
+
         const label = el("span", "", category);
         const expandIcon = el("span", "", "[+]");
         expandIcon.style.fontSize = "0.8rem";
         expandIcon.style.opacity = "0.7";
         catBtn.appendChild(label);
         catBtn.appendChild(expandIcon);
-        
+
         if (!isOther) {
-            catBtn.dataset.category = category;
-            filterButtons.push(catBtn);
+          catBtn.dataset.category = category;
+          filterButtons.push(catBtn);
         }
 
         const subDiv = el("div");
@@ -457,33 +472,33 @@ let currentProfiles: Record<string, {text: string, exclude: string[]}> = {};
         subDiv.style.padding = "10px 8px 10px 12px";
         subDiv.style.borderLeft = "2px solid var(--border-color)";
         subDiv.style.marginLeft = "12px";
-        
+
         catBtn.onclick = () => {
           if (!isOther) {
-              if (activeCategories.has(category)) {
-                  activeCategories.delete(category);
-              } else {
-                  activeCategories.add(category);
-              }
-              updateFilters();
+            if (activeCategories.has(category)) {
+              activeCategories.delete(category);
+            } else {
+              activeCategories.add(category);
+            }
+            updateFilters();
           }
           // Toggle drill down
           const isExpanded = subDiv.style.display === "flex";
           subDiv.style.display = isExpanded ? "none" : "flex";
           expandIcon.textContent = isExpanded ? "[+]" : "[-]";
         };
-        
+
         wrap.appendChild(catBtn);
-        
+
         for (const t of relevantTechs) {
           const btn = createFilterBtn(t, t);
           btn.onclick = () => {
-             if (activeFilters.has(t)) {
-                 activeFilters.delete(t);
-             } else {
-                 activeFilters.add(t);
-             }
-             updateFilters();
+            if (activeFilters.has(t)) {
+              activeFilters.delete(t);
+            } else {
+              activeFilters.add(t);
+            }
+            updateFilters();
           };
           filterButtons.push(btn);
           subDiv.appendChild(btn);
@@ -492,13 +507,13 @@ let currentProfiles: Record<string, {text: string, exclude: string[]}> = {};
         wrap.appendChild(subDiv);
         filterContainer.appendChild(wrap);
       };
-      
+
       for (const [category, techs] of Object.entries(hierarchy)) {
-        const relevantTechs = techs.filter(t => usedTechs.has(t));
+        const relevantTechs = techs.filter((t) => usedTechs.has(t));
         if (relevantTechs.length === 0) continue;
         createCatSection(category, relevantTechs, false);
       }
-      
+
       if (usedTechs.size > 0) {
         createCatSection("Other", Array.from(usedTechs).sort(), true);
       }
@@ -515,7 +530,12 @@ let currentProfiles: Record<string, {text: string, exclude: string[]}> = {};
           titleWrap.appendChild(link(proj.url, "Link"));
         }
         item.appendChild(titleWrap);
-        appendMeta(item, [(proj.technologies || []).join(", ")]);
+        const tagP = el("p", "meta");
+        tagP.style.fontSize = "0.75rem";
+        tagP.style.marginTop = "2px";
+        tagP.style.marginBottom = "4px";
+        tagP.textContent = (proj.technologies || []).join(", ");
+        item.appendChild(tagP);
         item.appendChild(el("p", "", proj.description));
         projectsList.appendChild(item);
 
@@ -589,36 +609,290 @@ let currentProfiles: Record<string, {text: string, exclude: string[]}> = {};
     ) {
       cvContent.appendChild(el("h2", "", "Skills"));
 
-      const skillGroups = new Map<string, string[]>();
+      const skillsSectionWrap = el("div");
+      skillsSectionWrap.style.display = "flex";
+      skillsSectionWrap.style.flexDirection = "row";
+      skillsSectionWrap.style.gap = "20px";
+
+      // Filter Sidebar
+      const skillFilterContainer = el("div");
+      skillFilterContainer.style.flex = "0 0 220px";
+      skillFilterContainer.style.display = "flex";
+      skillFilterContainer.style.flexDirection = "column";
+      skillFilterContainer.style.gap = "10px";
+
+      // Skills List
+      const skillsListContainer = el("div");
+      skillsListContainer.style.flex = "1";
+
+      const skillElements: { element: HTMLElement; tags: string[] }[] = [];
+      const categoryHeaders: {
+        header: HTMLElement;
+        elements: HTMLElement[];
+      }[] = [];
+      const skillFilterButtons: HTMLElement[] = [];
+      let activeSkillFilters: Set<string> = new Set();
+      let activeSkillCategories: Set<string> = new Set();
+
+      const updateSkillFilters = () => {
+        for (const btn of skillFilterButtons) {
+          const isTagMatch = btn.dataset.tag &&
+            activeSkillFilters.has(btn.dataset.tag);
+          const isCatMatch = btn.dataset.category &&
+            activeSkillCategories.has(btn.dataset.category);
+          const isAllMatch = btn.dataset.tag === "All" &&
+            activeSkillFilters.size === 0 && activeSkillCategories.size === 0;
+
+          if (isTagMatch || isCatMatch || isAllMatch) {
+            btn.style.background = "var(--text-color)";
+            btn.style.color = "var(--bg-color)";
+          } else {
+            btn.style.background = "var(--bg-color)";
+            btn.style.color = "var(--text-color)";
+          }
+        }
+
+        const hierarchy = cv.project_hierarchy || {};
+        for (const item of skillElements) {
+          if (
+            activeSkillFilters.size === 0 && activeSkillCategories.size === 0
+          ) {
+            item.element.style.display = "block";
+          } else {
+            let passed = false;
+            for (const tag of activeSkillFilters) {
+              if (item.tags.includes(tag)) {
+                passed = true;
+                break;
+              }
+            }
+            if (!passed) {
+              for (const cat of activeSkillCategories) {
+                const catTechs = hierarchy[cat] || [];
+                if (item.tags.some((t: string) => catTechs.includes(t))) {
+                  passed = true;
+                  break;
+                }
+              }
+            }
+            item.element.style.display = passed ? "block" : "none";
+          }
+        }
+        for (const ch of categoryHeaders) {
+          let anyVisible = false;
+          for (const el of ch.elements) {
+            if (el.style.display !== "none") {
+              anyVisible = true;
+              break;
+            }
+          }
+          ch.header.style.display = anyVisible ? "block" : "none";
+        }
+      };
+
+      const createSkillFilterBtn = (
+        tagName: string,
+        tagValue: string | null,
+      ) => {
+        const btn = el("button", "btn", tagName);
+        btn.dataset.tag = tagValue || "All";
+        btn.onclick = () => {
+          if (tagValue === null) {
+            activeSkillFilters.clear();
+            activeSkillCategories.clear();
+          } else {
+            if (activeSkillFilters.has(tagValue)) {
+              activeSkillFilters.delete(tagValue);
+            } else {
+              activeSkillFilters.add(tagValue);
+            }
+          }
+          updateSkillFilters();
+        };
+        return btn;
+      };
+
+      const allSkillRow = el("div");
+      allSkillRow.style.marginBottom = "8px";
+      const allSkillBtn = createSkillFilterBtn("All", null);
+      skillFilterButtons.push(allSkillBtn);
+      allSkillRow.appendChild(allSkillBtn);
+      skillFilterContainer.appendChild(allSkillRow);
+
+      const skillHierarchy = cv.project_hierarchy || {};
+
+      // Extract all tags used in skills
+      const allUsedTags = new Set<string>();
+      if (cv.skills) {
+        for (const s of cv.skills) {
+          if (s.tags) {
+            for (const t of s.tags) allUsedTags.add(t);
+          }
+        }
+      }
+      // Add Languages as a tag automatically
+      if (cv.languages) {
+        allUsedTags.add("Spoken Languages");
+      }
+
+      const createSkillCatSection = (
+        category: string,
+        relevantTags: string[],
+        isOther: boolean,
+      ) => {
+        const wrap = el("div");
+
+        const catBtn = el("button", "btn");
+        catBtn.style.fontWeight = "bold";
+        catBtn.style.width = "100%";
+        catBtn.style.textAlign = "left";
+        catBtn.style.display = "flex";
+        catBtn.style.justifyContent = "space-between";
+
+        const label = el("span", "", category);
+        const expandIcon = el("span", "", "[+]");
+        expandIcon.style.fontSize = "0.8rem";
+        expandIcon.style.opacity = "0.7";
+        catBtn.appendChild(label);
+        catBtn.appendChild(expandIcon);
+
+        if (!isOther) {
+          catBtn.dataset.category = category;
+          skillFilterButtons.push(catBtn);
+        }
+
+        const subDiv = el("div");
+        subDiv.style.display = "none";
+        subDiv.style.flexWrap = "wrap";
+        subDiv.style.gap = "8px";
+        subDiv.style.padding = "10px 8px 10px 12px";
+        subDiv.style.borderLeft = "2px solid var(--border-color)";
+        subDiv.style.marginLeft = "12px";
+
+        catBtn.onclick = () => {
+          if (!isOther) {
+            if (activeSkillCategories.has(category)) {
+              activeSkillCategories.delete(category);
+            } else {
+              activeSkillCategories.add(category);
+            }
+            updateSkillFilters();
+          }
+          const isExpanded = subDiv.style.display === "flex";
+          subDiv.style.display = isExpanded ? "none" : "flex";
+          expandIcon.textContent = isExpanded ? "[+]" : "[-]";
+        };
+
+        wrap.appendChild(catBtn);
+
+        for (const t of relevantTags) {
+          const btn = createSkillFilterBtn(t, t);
+          skillFilterButtons.push(btn);
+          subDiv.appendChild(btn);
+          if (!isOther) allUsedTags.delete(t);
+        }
+        wrap.appendChild(subDiv);
+        skillFilterContainer.appendChild(wrap);
+      };
+
+      for (const [category, tags] of Object.entries(skillHierarchy)) {
+        const relevantTags = (tags as string[]).filter((t) =>
+          allUsedTags.has(t)
+        );
+        if (relevantTags.length === 0) continue;
+        createSkillCatSection(category, relevantTags, false);
+      }
+
+      if (allUsedTags.size > 0) {
+        createSkillCatSection("Other", Array.from(allUsedTags).sort(), true);
+      }
+
+      skillsSectionWrap.appendChild(skillFilterContainer);
+      skillsSectionWrap.appendChild(skillsListContainer);
+      cvContent.appendChild(skillsSectionWrap);
+
+      // Render actual skills
+      const skillGroups = new Map<string, any[]>();
       if (cv.skills) {
         for (const skill of cv.skills) {
           if (!skillGroups.has(skill.category)) {
             skillGroups.set(skill.category, []);
           }
-          skillGroups.get(skill.category)!.push(skill.description);
+          skillGroups.get(skill.category)!.push(skill);
         }
-      }
-
-      if (cv.languages && cv.languages.length > 0) {
-        skillGroups.set(
-          "Languages",
-          cv.languages.map((l) => `${l.name} (${l.proficiency})`),
-        );
       }
 
       for (const [category, items] of skillGroups.entries()) {
         const catHeader = el("h3", "", category);
-        catHeader.style.marginTop = "12px";
-        catHeader.style.marginBottom = "8px";
-        cvContent.appendChild(catHeader);
+        catHeader.style.marginTop = "0px";
+        catHeader.style.marginBottom = "10px";
+        skillsListContainer.appendChild(catHeader);
 
-        const ul = el("ul");
-        ul.style.marginTop = "0";
+        const currentCatElements: HTMLElement[] = [];
+
         for (const item of items) {
-          ul.appendChild(el("li", "", item));
+          const elItem = el("div");
+          elItem.style.marginBottom = "12px";
+          elItem.style.paddingLeft = "10px";
+          elItem.style.borderLeft = "2px solid var(--border-color)";
+
+          const b = el("span");
+          b.innerHTML = `• ${item.description}`;
+          elItem.appendChild(b);
+
+          if (item.tags && item.tags.length > 0) {
+            const tagP = el("p", "meta");
+            tagP.style.fontSize = "0.7rem";
+            tagP.style.marginTop = "2px";
+            tagP.textContent = item.tags.join(", ");
+            elItem.appendChild(tagP);
+          }
+
+          skillsListContainer.appendChild(elItem);
+          skillElements.push({ element: elItem, tags: item.tags || [] });
+          currentCatElements.push(elItem);
         }
-        cvContent.appendChild(ul);
+        categoryHeaders.push({
+          header: catHeader,
+          elements: currentCatElements,
+        });
       }
+
+      if (cv.languages && cv.languages.length > 0) {
+        const catHeader = el("h3", "", "Languages");
+        catHeader.style.marginTop = "10px";
+        catHeader.style.marginBottom = "10px";
+        skillsListContainer.appendChild(catHeader);
+
+        const currentCatElements: HTMLElement[] = [];
+
+        for (const l of cv.languages) {
+          const elItem = el("div");
+          elItem.style.marginBottom = "12px";
+          elItem.style.paddingLeft = "10px";
+          elItem.style.borderLeft = "2px solid var(--border-color)";
+
+          const b = el("span");
+          b.innerHTML = `• ${l.name} (${l.proficiency})`;
+          elItem.appendChild(b);
+
+          const tagP = el("p", "meta");
+          tagP.style.fontSize = "0.7rem";
+          tagP.style.marginTop = "2px";
+          tagP.textContent = "Spoken Languages";
+          elItem.appendChild(tagP);
+
+          skillsListContainer.appendChild(elItem);
+          skillElements.push({ element: elItem, tags: ["Spoken Languages"] });
+          currentCatElements.push(elItem);
+        }
+        categoryHeaders.push({
+          header: catHeader,
+          elements: currentCatElements,
+        });
+      }
+
+      updateSkillFilters();
     }
 
     // Lisp Mode
@@ -786,24 +1060,31 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
-  const profileSel = document.getElementById("profile-selector") as HTMLSelectElement;
+  const profileSel = document.getElementById(
+    "profile-selector",
+  ) as HTMLSelectElement;
   if (profileSel) {
     profileSel.addEventListener("change", (e) => {
       const mode = (e.target as HTMLSelectElement).value;
-      const p = currentProfiles[mode] || currentProfiles["general"] || {exclude: []};
+      const p = currentProfiles[mode] || currentProfiles["general"] ||
+        { exclude: [] };
       const excludes = p.exclude || [];
-      
+
       const setCheck = (id: string, excludeKeys: string[]) => {
         const el = document.getElementById(id) as HTMLInputElement;
-        if (el) el.checked = !excludeKeys.some(k => excludes.includes(k));
+        if (el) el.checked = !excludeKeys.some((k) => excludes.includes(k));
       };
-      
-      setCheck("toggle-publications", ["publications", "conferences", "service"]);
+
+      setCheck("toggle-publications", [
+        "publications",
+        "conferences",
+        "service",
+      ]);
       setCheck("toggle-experience", ["experience", "employment"]);
       setCheck("toggle-education", ["education"]);
       setCheck("toggle-skills", ["skills", "languages"]);
       setCheck("toggle-projects", ["projects", "certifications"]);
-      
+
       renderCV();
     });
   }
@@ -843,7 +1124,10 @@ document.addEventListener("DOMContentLoaded", () => {
         excludes.push("projects", "certifications");
       }
 
-      let url = (window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost") ? "http://127.0.0.1:3000/api/cv.pdf" : "/api/cv.pdf";
+      let url = (window.location.hostname === "127.0.0.1" ||
+          window.location.hostname === "localhost")
+        ? "http://127.0.0.1:3000/api/cv.pdf"
+        : "/api/cv.pdf";
       if (excludes.length > 0) {
         url += "?exclude=" + excludes.join(",");
       }

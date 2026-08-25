@@ -17,15 +17,21 @@ class DataAdapter:
             exp["bullets"] = json.dumps(exp["bullets"])
         for proj in dump.get("projects", []):
             proj["technologies"] = json.dumps(proj["technologies"])
+        for skill in dump.get("skills", []):
+            skill["tags"] = json.dumps(skill.get("tags") or [])
         if "personal_info" in dump:
             dump["personal_info"]["links"] = json.dumps(
                 dump["personal_info"].get("links", [])
             )
             if "profiles" in dump["personal_info"]:
-                dump["personal_info"]["profiles"] = json.dumps(dump["personal_info"]["profiles"])
+                dump["personal_info"]["profiles"] = json.dumps(
+                    dump["personal_info"]["profiles"]
+                )
 
         if "project_hierarchy" in dump:
-            dump["project_hierarchy"] = {"hierarchy": json.dumps(dump["project_hierarchy"])}
+            dump["project_hierarchy"] = {
+                "hierarchy": json.dumps(dump["project_hierarchy"])
+            }
 
         with h5py.File(self.h5_filepath, "w") as f:
             for name, data in dump.items():
@@ -90,7 +96,10 @@ class DataAdapter:
         for proj in data_dump.get("projects", []):
             if isinstance(proj.get("technologies"), str):
                 proj["technologies"] = json.loads(proj["technologies"])
-        
+        for skill in data_dump.get("skills", []):
+            if isinstance(skill.get("tags"), str):
+                skill["tags"] = json.loads(skill["tags"])
+
         if "personal_info" in data_dump:
             if isinstance(data_dump["personal_info"].get("links"), str):
                 data_dump["personal_info"]["links"] = json.loads(
@@ -98,7 +107,9 @@ class DataAdapter:
                 )
             if isinstance(data_dump["personal_info"].get("profiles"), str):
                 try:
-                    data_dump["personal_info"]["profiles"] = json.loads(data_dump["personal_info"]["profiles"])
+                    data_dump["personal_info"]["profiles"] = json.loads(
+                        data_dump["personal_info"]["profiles"]
+                    )
                 except Exception:
                     data_dump["personal_info"]["profiles"] = {}
 

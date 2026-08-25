@@ -1,5 +1,5 @@
 industry:
-  exclude: 
+  exclude:
     - publications
     - conferences
     - service

@@ -19,9 +19,7 @@ pub fn read_cv(path: &str) -> Result<Value> {
 
     if let Ok(group) = file.group("personal_info") {
         let mut pi = Map::new();
-        for col in &[
-            "name", "email", "orcid", "city", "country", "timezone",
-        ] {
+        for col in &["name", "email", "orcid", "city", "country", "timezone"] {
             if let Ok(v) = read_string_column(&group, col) {
                 if let Some(s) = v.first() {
                     if !s.is_empty() {
@@ -51,9 +49,22 @@ pub fn read_cv(path: &str) -> Result<Value> {
             read_string_column(&group, "description"),
         ) {
             (Ok(cats), Ok(descs)) => {
+                let tags_col = read_string_column(&group, "tags").unwrap_or_default();
                 let mut skills = Vec::new();
-                for (c, d) in cats.into_iter().zip(descs.into_iter()) {
-                    skills.push(json!({"category": c, "description": d}));
+                for i in 0..cats.len() {
+                    let mut obj = json!({"category": cats[i], "description": descs[i]});
+                    if i < tags_col.len() {
+                        let t_val: Value =
+                            serde_json::from_str(&tags_col[i]).unwrap_or_else(|_| json!([]));
+                        obj.as_object_mut()
+                            .unwrap()
+                            .insert("tags".to_string(), t_val);
+                    } else {
+                        obj.as_object_mut()
+                            .unwrap()
+                            .insert("tags".to_string(), json!([]));
+                    }
+                    skills.push(obj);
                 }
                 cv.insert("skills".to_string(), Value::Array(skills));
             }

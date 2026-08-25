@@ -26,6 +26,8 @@ class PersonalInfo(BaseModel):
 class Skill(BaseModel):
     category: str
     description: str
+    tags: list[str] | None = None
+    tags: list[str] | None = None
 
 
 class Experience(BaseModel):
@@ -41,6 +43,7 @@ class Education(BaseModel):
     degree: str
     institution: str
     description: str | None = None
+    tags: list[str] | None = None
 
 
 class Employment(BaseModel):
@@ -62,6 +65,7 @@ class Publication(BaseModel):
 class Project(BaseModel):
     name: str
     description: str
+    tags: list[str] | None = None
     technologies: list[str] = []
     url: str | None = None
 
@@ -90,6 +94,7 @@ class Service(BaseModel):
     organization: str
     date: str
     description: str | None = None
+    tags: list[str] | None = None
 
 
 class CVData(BaseModel):

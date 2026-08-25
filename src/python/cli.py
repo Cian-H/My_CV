@@ -11,14 +11,23 @@ app = typer.Typer()
 
 
 @app.command(name="sync")
-def sync_cmd(profile: str = typer.Option("general", help="Profile to use (e.g. academic, industry)")):
+def sync_cmd(
+    profile: str = typer.Option(
+        "general", help="Profile to use (e.g. academic, industry)"
+    ),
+):
     """Sync the structured CV content to the HDF5 lock file."""
     print(f"Syncing data into cv_data.h5 using profile: {profile}...")
     sync(profile)
 
 
 @app.command(name="build-static")
-def generate_static_cmd(exclude: str = "", profile: str = typer.Option("general", help="Profile to use (e.g. academic, industry)")):
+def generate_static_cmd(
+    exclude: str = "",
+    profile: str = typer.Option(
+        "general", help="Profile to use (e.g. academic, industry)"
+    ),
+):
     """Generate the static PDF CV into the build/ directory. Use --exclude to comma-separate sections to exclude."""
     print(f"Generating static CV with profile {profile}...")
     excludes = [e.strip() for e in exclude.split(",")] if exclude else None

@@ -1,6 +1,17 @@
 - name: "CSC1109: Data Speed and Scale"
   description: "Single-handedly modernized an aging BSc Data Science module on big data processing. Replaced legacy Vagrant environments with containerized Docker labs and deployed a modern ReadTheDocs/MkDocs site. The curriculum covers Hadoop, Hive, Pig, Storm, Spark, and cluster computing, culminating in students designing their own big data distributed analysis systems for targeted purposes."
-  technologies: ["Docker", "Python", "MkDocs", "Hadoop", "Spark", "Hive", "Pig", "Storm", "Education"]
+  technologies:
+    [
+      "Docker",
+      "Python",
+      "MkDocs",
+      "Hadoop",
+      "Spark",
+      "Hive",
+      "Pig",
+      "Storm",
+      "Education",
+    ]
   url: "https://github.com/CA4022/CSC1109-Data-Speed-and-Scale"
 
 - name: "Scanline Annotator"
@@ -45,7 +56,7 @@
 
 - name: "Workday Progress"
   description: "A plugin for the Noctalia shell that adds a linear time display progress bar for work hours to assist with daily time management."
-  technologies: ["QML", "C++", "UI Design"]
+  technologies: ["QML", "UI Design"]
   url: "https://github.com/Cian-H/workday-progress"
 
 - name: "FastMath"
@@ -72,4 +83,3 @@
   description: "A fully declarative, reproducible operating system configuration using Nix to streamline migration and deployment across personal and server infrastructure."
   technologies: ["Nix", "Linux", "SysAdmin", "DevOps"]
   url: "https://github.com/Cian-H/My_NixOS_Config"
-

@@ -10,7 +10,9 @@ def generate_static(excludes: list[str] | None = None, profile: str = "industry"
     cv_dict = cv_data.model_dump(exclude_none=True)
     if "personal_info" in cv_dict and "profiles" in cv_dict["personal_info"]:
         profiles = cv_dict["personal_info"].pop("profiles")
-        prof_data = profiles.get(profile, profiles.get("hybrid", profiles.get("default", {})))
+        prof_data = profiles.get(
+            profile, profiles.get("hybrid", profiles.get("default", {}))
+        )
         if isinstance(prof_data, str):
             prof_data = {"text": prof_data, "exclude": []}
         cv_dict["personal_info"]["profile"] = prof_data.get("text", "")

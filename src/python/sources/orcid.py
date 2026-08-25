@@ -15,7 +15,9 @@ def fetch_orcid_works(orcid_id: str) -> list[Publication]:
     req = urllib.request.Request(url, headers={"Accept": "application/json"})
 
     try:
-        with urllib.request.urlopen(req, context=ssl._create_unverified_context()) as response:
+        with urllib.request.urlopen(
+            req, context=ssl._create_unverified_context()
+        ) as response:
             data = json.loads(response.read().decode())
     except urllib.error.URLError as e:
         print(f"Error fetching works from ORCID: {e}")
@@ -85,7 +87,9 @@ def fetch_orcid_employments(orcid_id: str) -> list[Employment]:
     req = urllib.request.Request(url, headers={"Accept": "application/json"})
 
     try:
-        with urllib.request.urlopen(req, context=ssl._create_unverified_context()) as response:
+        with urllib.request.urlopen(
+            req, context=ssl._create_unverified_context()
+        ) as response:
             data = json.loads(response.read().decode())
     except urllib.error.URLError as e:
         print(f"Error fetching employments from ORCID: {e}")
