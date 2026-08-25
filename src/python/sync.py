@@ -14,7 +14,7 @@ def clean_empty_strings(obj):
     return obj
 
 
-def sync():
+def sync(profile: str = "industry"):
     raw_dir = Path("content")
 
     data_dict = {
@@ -23,10 +23,27 @@ def sync():
 
     data_dict = clean_empty_strings(data_dict)
 
-    if (profile_path := raw_dir / "profile.typ").exists():
-        data_dict.setdefault("personal_info", {})["profile"] = (
-            profile_path.read_text().strip()
-        )
+    # We already read profiles.yaml into data_dict["profiles"] due to raw_dir.glob("*.yaml")
+    # Let's extract it and build the correct structure
+    profiles_config = data_dict.pop("profiles", {})
+    if not isinstance(profiles_config, dict):
+        profiles_config = {}
+
+    profiles = {}
+    for p_name, p_data in profiles_config.items():
+        if p_data is None:
+            p_data = {}
+        profiles[p_name] = {"exclude": p_data.get("exclude", [])}
+
+    for p in raw_dir.glob("profile*.typ"):
+        name = p.stem.replace("profile_", "")
+        if name == "profile":
+            name = "default"
+        if name not in profiles:
+            profiles[name] = {"exclude": []}
+        profiles[name]["text"] = p.read_text().strip()
+
+    data_dict.setdefault("personal_info", {})["profiles"] = profiles
 
     orcid_url = data_dict.get("personal_info", {}).get("orcid", "")
     if orcid_id := (orcid_url.split("/")[-1] if orcid_url else ""):

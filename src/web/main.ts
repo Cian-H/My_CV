@@ -17,7 +17,7 @@ interface PersonalInfo {
   city?: string;
   country?: string;
   timezone?: string;
-  profile: string;
+  profiles: Record<string, {text: string, exclude: string[]}>;
 }
 
 interface Skill {
@@ -194,6 +194,7 @@ async function renderCV() {
 
     // --- Personal Info ---
     const pi = cv.personal_info;
+    if (pi.profiles) currentProfiles = pi.profiles;
     const nameH1 = el("h1");
     if (isRetro && pi.name.length > 0) {
       const firstLetter = document.createElement("span");
@@ -279,7 +280,9 @@ async function renderCV() {
     }
     cvContent.appendChild(linkContainer);
 
-    cvContent.appendChild(el("p", "", pi.profile));
+    const profileMode = (document.getElementById("profile-selector") as HTMLSelectElement)?.value || "industry";
+    const profData = pi.profiles[profileMode] || pi.profiles["hybrid"] || pi.profiles["default"] || Object.values(pi.profiles)[0] || {text: "", exclude: []};
+    cvContent.appendChild(el("p", "", profData.text || ""));
 
     // --- Experience / Employment ---
     if (cv.experience && cv.experience.length > 0) {
@@ -342,6 +345,7 @@ async function renderCV() {
 
       // Render filter buttons
       let activeFilter: string | null = null;
+let currentProfiles: Record<string, {text: string, exclude: string[]}> = {};
       const projectItems: { element: HTMLElement; techs: string[] }[] = [];
       const filterButtons: HTMLElement[] = [];
 
@@ -669,6 +673,28 @@ document.addEventListener("DOMContentLoaded", () => {
         if (themeSel.value === "auto") applyTheme("auto");
       },
     );
+  }
+
+  const profileSel = document.getElementById("profile-selector") as HTMLSelectElement;
+  if (profileSel) {
+    profileSel.addEventListener("change", (e) => {
+      const mode = (e.target as HTMLSelectElement).value;
+      const p = currentProfiles[mode] || currentProfiles["hybrid"] || {exclude: []};
+      const excludes = p.exclude || [];
+      
+      const setCheck = (id: string, excludeKeys: string[]) => {
+        const el = document.getElementById(id) as HTMLInputElement;
+        if (el) el.checked = !excludeKeys.some(k => excludes.includes(k));
+      };
+      
+      setCheck("toggle-publications", ["publications", "conferences", "service"]);
+      setCheck("toggle-experience", ["experience", "employment"]);
+      setCheck("toggle-education", ["education"]);
+      setCheck("toggle-skills", ["skills", "languages"]);
+      setCheck("toggle-projects", ["projects", "certifications"]);
+      
+      renderCV();
+    });
   }
 
   // Download PDF

@@ -7,6 +7,11 @@ class Link(BaseModel):
     icon: str | None = None
 
 
+class ProfileConfig(BaseModel):
+    text: str = ""
+    exclude: list[str] = []
+
+
 class PersonalInfo(BaseModel):
     name: str
     email: str
@@ -15,7 +20,7 @@ class PersonalInfo(BaseModel):
     city: str | None = None
     country: str | None = None
     timezone: str | None = None
-    profile: str
+    profiles: dict[str, ProfileConfig] = {}
 
 
 class Skill(BaseModel):

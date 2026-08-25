@@ -20,7 +20,7 @@ pub fn read_cv(path: &str) -> Result<Value> {
     if let Ok(group) = file.group("personal_info") {
         let mut pi = Map::new();
         for col in &[
-            "name", "email", "orcid", "profile", "city", "country", "timezone",
+            "name", "email", "orcid", "city", "country", "timezone",
         ] {
             if let Ok(v) = read_string_column(&group, col) {
                 if let Some(s) = v.first() {
@@ -34,6 +34,12 @@ pub fn read_cv(path: &str) -> Result<Value> {
             if let Some(s) = v.first() {
                 let parsed: Value = serde_json::from_str(s).unwrap_or_else(|_| json!([]));
                 pi.insert("links".to_string(), parsed);
+            }
+        }
+        if let Ok(v) = read_string_column(&group, "profiles") {
+            if let Some(s) = v.first() {
+                let parsed: Value = serde_json::from_str(s).unwrap_or_else(|_| json!({}));
+                pi.insert("profiles".to_string(), parsed);
             }
         }
         cv.insert("personal_info".to_string(), Value::Object(pi));
@@ -242,6 +248,38 @@ pub fn read_cv(path: &str) -> Result<Value> {
                 cv.insert("languages".to_string(), Value::Array(langs));
             }
             err => println!("Languages error: {:?}", err),
+        }
+    }
+
+    if let Ok(group) = file.group("service") {
+        match (
+            read_string_column(&group, "role"),
+            read_string_column(&group, "organization"),
+            read_string_column(&group, "date"),
+            read_string_column(&group, "description"),
+        ) {
+            (Ok(roles), Ok(orgs), Ok(dates), Ok(descs)) => {
+                let mut svcs = Vec::new();
+                for i in 0..roles.len() {
+                    svcs.push(json!({
+                        "role": roles[i],
+                        "organization": orgs[i],
+                        "date": dates[i],
+                        "description": if descs[i].is_empty() { Value::Null } else { json!(descs[i]) }
+                    }));
+                }
+                cv.insert("service".to_string(), Value::Array(svcs));
+            }
+            err => println!("Service error: {:?}", err),
+        }
+    }
+
+    if let Ok(group) = file.group("project_hierarchy") {
+        if let Ok(v) = read_string_column(&group, "hierarchy") {
+            if let Some(s) = v.first() {
+                let parsed: Value = serde_json::from_str(s).unwrap_or_else(|_| json!({}));
+                cv.insert("project_hierarchy".to_string(), parsed);
+            }
         }
     }
 

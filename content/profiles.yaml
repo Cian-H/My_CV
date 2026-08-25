@@ -1,0 +1,9 @@
+industry:
+  exclude: 
+    - publications
+    - conferences
+    - service
+academic:
+  exclude: []
+general:
+  exclude: []
