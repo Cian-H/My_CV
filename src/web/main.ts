@@ -178,6 +178,7 @@ async function renderCV() {
     if (!response.ok) throw new Error("Failed to fetch CV");
 
     const buffer = await response.arrayBuffer();
+    (window as any).rawCVBuffer = new Uint8Array(buffer);
     const cv: CVData = BSON.deserialize(new Uint8Array(buffer));
 
     // Retro mode toggle
@@ -1010,6 +1011,118 @@ async function renderCV() {
 
 // Setup Event Listeners
 document.addEventListener("DOMContentLoaded", () => {
+  // --- NeSy Mode Logic ---
+  const toggleNeSy = document.getElementById("toggle-nesy") as HTMLInputElement;
+  const cvContentElForNeSy = document.getElementById("cv-content")!;
+
+  if (toggleNeSy) {
+    let originalNodes: Node[] = [];
+    let wrappers: HTMLDivElement[] = [];
+    let trepanBtn: HTMLButtonElement | null = null;
+
+    toggleNeSy.addEventListener("change", () => {
+      if (toggleNeSy.checked) {
+        // Save original children
+        originalNodes = Array.from(cvContentElForNeSy.childNodes);
+        cvContentElForNeSy.innerHTML = "";
+        wrappers = [];
+
+        // Add Apply TREPAN button
+        trepanBtn = document.createElement("button");
+        trepanBtn.className = "btn btn-primary";
+        trepanBtn.textContent = "Apply TREPAN";
+        trepanBtn.style.position = "sticky";
+        trepanBtn.style.top = "40px"; // Align with sidebar
+        trepanBtn.style.zIndex = "1000";
+        trepanBtn.style.display = "block";
+        trepanBtn.style.margin = "0 auto 20px auto"; // Center it
+        cvContentElForNeSy.appendChild(trepanBtn);
+
+        const buf = (window as any).rawCVBuffer as Uint8Array;
+        let byteOffset = 0;
+
+        for (const node of originalNodes) {
+          const wrap = document.createElement("div");
+          wrap.style.fontFamily = "monospace";
+          wrap.style.fontSize = "14px";
+          wrap.style.color = "#00ff00";
+          wrap.style.wordBreak = "break-all";
+          wrap.style.marginBottom = "10px";
+
+          // Assign a chunk of the raw buffer to this wrapper
+          let binStr = "";
+          const chunkSize = Math.floor(Math.random() * 50) + 20;
+          for (let i = 0; i < chunkSize; i++) {
+            if (buf && byteOffset < buf.length) {
+              binStr += buf[byteOffset].toString(2).padStart(8, "0") + " ";
+              byteOffset++;
+            } else {
+              binStr += Math.random() > 0.5 ? "10110010 " : "01001101 ";
+            }
+          }
+          wrap.textContent = binStr;
+          cvContentElForNeSy.appendChild(wrap);
+          wrappers.push(wrap);
+        }
+
+        let decoding = false;
+        trepanBtn.onclick = () => {
+          if (decoding) return;
+          decoding = true;
+          trepanBtn!.textContent = "Extracting Symbols...";
+
+          // Randomly decode wrappers at different rates
+          let remaining = wrappers.length;
+          const indices = Array.from({ length: remaining }, (_, i) => i);
+
+          const decodeInterval = setInterval(() => {
+            if (indices.length === 0) {
+              clearInterval(decodeInterval);
+              trepanBtn!.remove();
+              toggleNeSy.checked = false;
+              // Dispatch change event to trigger cleanup
+              toggleNeSy.dispatchEvent(new Event("change"));
+              return;
+            }
+
+            // Pick a random wrapper
+            const randIdx = Math.floor(Math.random() * indices.length);
+            const wIdx = indices.splice(randIdx, 1)[0];
+            const wrap = wrappers[wIdx];
+            const originalNode = originalNodes[wIdx];
+
+            // Matrix scramble effect
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
+            let scrambles = 0;
+            const scrambleInt = setInterval(() => {
+              let str = "";
+              for (let i = 0; i < 40; i++) {
+                str += chars[Math.floor(Math.random() * chars.length)];
+              }
+              wrap.textContent = str;
+              scrambles++;
+              if (scrambles > 10) {
+                clearInterval(scrambleInt);
+                wrap.innerHTML = "";
+                wrap.appendChild(originalNode);
+                wrap.style.color = "var(--text-color)";
+                wrap.style.fontFamily = "var(--font-sans)";
+              }
+            }, 30);
+          }, 100);
+        };
+      } else {
+        // If turned off prematurely, restore immediately
+        if (originalNodes.length > 0) {
+          cvContentElForNeSy.innerHTML = "";
+          for (const node of originalNodes) {
+            cvContentElForNeSy.appendChild(node);
+          }
+        }
+      }
+    });
+  }
+
   // --- FUN STUFF LOGIC ---
   const cats: HTMLDivElement[] = [];
   let catInterval: ReturnType<typeof setInterval> | null = null;
@@ -1083,6 +1196,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Checkboxes
   document.querySelectorAll('.controls input[type="checkbox"]').forEach(
     (cb) => {
+      if (cb.id === "toggle-nesy" || cb.id === "toggle-cat") return;
       cb.addEventListener("change", renderCV);
     },
   );
