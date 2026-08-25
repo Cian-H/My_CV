@@ -347,11 +347,9 @@ async function renderCV() {
       const sortedTechs = Array.from(allTechs).sort();
 
       // Filter UI container
-      const filterContainer = el("div", "project-filters");
-      filterContainer.style.display = "flex";
-      filterContainer.style.flexWrap = "wrap";
-      filterContainer.style.gap = "8px";
-      filterContainer.style.marginBottom = "16px";
+      const projectsSectionWrap = el("div", "filter-layout");
+      const filterContainer = el("div", "filter-sidebar");
+      const projectsListContainer = el("div", "filter-content");
 
       // Render filter buttons
       let activeFilters: Set<string> = new Set();
@@ -518,8 +516,6 @@ async function renderCV() {
         createCatSection("Other", Array.from(usedTechs).sort(), true);
       }
 
-      cvContent.appendChild(filterContainer);
-
       // Render projects
       const projectsList = el("div", "projects-list");
       for (const proj of cv.projects) {
@@ -544,7 +540,10 @@ async function renderCV() {
           techs: proj.technologies || [],
         });
       }
-      cvContent.appendChild(projectsList);
+      projectsListContainer.appendChild(projectsList);
+      projectsSectionWrap.appendChild(filterContainer);
+      projectsSectionWrap.appendChild(projectsListContainer);
+      cvContent.appendChild(projectsSectionWrap);
 
       // Initialize state
       updateFilters();
@@ -609,21 +608,13 @@ async function renderCV() {
     ) {
       cvContent.appendChild(el("h2", "", "Skills"));
 
-      const skillsSectionWrap = el("div");
-      skillsSectionWrap.style.display = "flex";
-      skillsSectionWrap.style.flexDirection = "row";
-      skillsSectionWrap.style.gap = "20px";
+      const skillsSectionWrap = el("div", "filter-layout");
 
       // Filter Sidebar
-      const skillFilterContainer = el("div");
-      skillFilterContainer.style.flex = "0 0 220px";
-      skillFilterContainer.style.display = "flex";
-      skillFilterContainer.style.flexDirection = "column";
-      skillFilterContainer.style.gap = "10px";
+      const skillFilterContainer = el("div", "filter-sidebar");
 
       // Skills List
-      const skillsListContainer = el("div");
-      skillsListContainer.style.flex = "1";
+      const skillsListContainer = el("div", "filter-content");
 
       const skillElements: { element: HTMLElement; tags: string[] }[] = [];
       const categoryHeaders: {
@@ -956,6 +947,61 @@ async function renderCV() {
 
       const cvContentEl = document.getElementById("cv-content");
       if (cvContentEl) applyLisp(cvContentEl, 0);
+    }
+
+    // --- Generate Table of Contents ---
+    const tocContainer = document.getElementById("toc-container");
+    if (tocContainer) {
+      tocContainer.innerHTML = "";
+      
+      const details = document.createElement("details");
+      details.className = "toc-details";
+      // Open by default on desktop, closed on mobile
+      if (window.innerWidth > 768) {
+          details.open = true;
+      }
+      
+      const summary = document.createElement("summary");
+      summary.style.cursor = "pointer";
+      summary.style.fontWeight = "bold";
+      summary.style.userSelect = "none";
+      
+      const tocHeader = el("h3", "", "Table of Contents");
+      tocHeader.style.display = "inline";
+      tocHeader.style.margin = "0";
+      
+      summary.appendChild(tocHeader);
+      details.appendChild(summary);
+      
+      const h2s = cvContent.querySelectorAll("h2");
+      const tocList = el("div");
+      tocList.style.display = "flex";
+      tocList.style.gap = "8px";
+      tocList.style.marginTop = "12px";
+      tocList.className = "toc-list";
+      
+      let i = 0;
+      h2s.forEach(h2 => {
+          const id = "section-" + i;
+          h2.id = id;
+          i++;
+          
+          const link = document.createElement("a");
+          link.href = "#" + id;
+          link.textContent = h2.textContent;
+          link.className = "toc-link";
+          
+          link.onclick = () => {
+              if (window.innerWidth <= 768) {
+                  details.open = false;
+              }
+          };
+          
+          tocList.appendChild(link);
+      });
+      
+      details.appendChild(tocList);
+      tocContainer.appendChild(details);
     }
   } catch (e) {
     cvContent.textContent = "Error loading CV API: " + e;
