@@ -27,7 +27,6 @@ class Skill(BaseModel):
     category: str
     description: str
     tags: list[str] | None = None
-    tags: list[str] | None = None
 
 
 class Experience(BaseModel):

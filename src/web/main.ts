@@ -20,9 +20,19 @@ interface PersonalInfo {
   profiles: Record<string, { text: string; exclude: string[] }>;
 }
 
+interface Service {
+  organization: string;
+  role: string;
+  date: string;
+  url?: string;
+  description?: string;
+}
+
 interface Skill {
+  name: string;
+  tags?: string[];
+  description?: string;
   category: string;
-  description: string;
 }
 
 interface Experience {
@@ -82,6 +92,8 @@ interface Language {
   proficiency: string;
 }
 
+let currentProfiles: Record<string, { text: string; exclude: string[] }> = {};
+
 interface CVData {
   personal_info: PersonalInfo;
   skills?: Skill[];
@@ -134,7 +146,6 @@ function link(href: string, text: string): HTMLAnchorElement {
 
 async function renderCV() {
   const cvContent = document.getElementById("cv-content")!;
-  cvContent.innerHTML = "Loading CV...";
 
   try {
     const excludes: string[] = [];
@@ -166,8 +177,8 @@ async function renderCV() {
       excludes.push("projects", "certifications");
     }
 
-    let url = (window.location.hostname === "127.0.0.1" ||
-        window.location.hostname === "localhost")
+    let url = (globalThis.location.hostname === "127.0.0.1" ||
+        globalThis.location.hostname === "localhost")
       ? "http://127.0.0.1:3000/api/cv.bson"
       : "/api/cv.bson";
     if (excludes.length > 0) {
@@ -178,8 +189,11 @@ async function renderCV() {
     if (!response.ok) throw new Error("Failed to fetch CV");
 
     const buffer = await response.arrayBuffer();
-    (window as any).rawCVBuffer = new Uint8Array(buffer);
+    // deno-lint-ignore no-explicit-any
+    (globalThis as any).rawCVBuffer = new Uint8Array(buffer);
     const cv: CVData = BSON.deserialize(new Uint8Array(buffer));
+
+    cvContent.innerHTML = "";
 
     // Retro mode toggle
     const isRetro =
@@ -353,10 +367,9 @@ async function renderCV() {
       const projectsListContainer = el("div", "filter-content");
 
       // Render filter buttons
-      let activeFilters: Set<string> = new Set();
-      let activeCategories: Set<string> = new Set();
-      let currentProfiles: Record<string, { text: string; exclude: string[] }> =
-        {};
+      const activeFilters: Set<string> = new Set();
+      const activeCategories: Set<string> = new Set();
+
       const projectItems: { element: HTMLElement; techs: string[] }[] = [];
       const filterButtons: HTMLElement[] = [];
 
@@ -623,8 +636,8 @@ async function renderCV() {
         elements: HTMLElement[];
       }[] = [];
       const skillFilterButtons: HTMLElement[] = [];
-      let activeSkillFilters: Set<string> = new Set();
-      let activeSkillCategories: Set<string> = new Set();
+      const activeSkillFilters: Set<string> = new Set();
+      const activeSkillCategories: Set<string> = new Set();
 
       const updateSkillFilters = () => {
         for (const btn of skillFilterButtons) {
@@ -804,7 +817,7 @@ async function renderCV() {
       cvContent.appendChild(skillsSectionWrap);
 
       // Render actual skills
-      const skillGroups = new Map<string, any[]>();
+      const skillGroups = new Map<string, Skill[]>();
       if (cv.skills) {
         for (const skill of cv.skills) {
           if (!skillGroups.has(skill.category)) {
@@ -958,7 +971,7 @@ async function renderCV() {
       const details = document.createElement("details");
       details.className = "toc-details";
       // Open by default on desktop, closed on mobile
-      if (window.innerWidth > 768) {
+      if (globalThis.innerWidth > 768) {
         details.open = true;
       }
 
@@ -993,7 +1006,7 @@ async function renderCV() {
         link.className = "toc-link";
 
         link.onclick = () => {
-          if (window.innerWidth <= 768) {
+          if (globalThis.innerWidth <= 768) {
             details.open = false;
           }
         };
@@ -1038,10 +1051,11 @@ document.addEventListener("DOMContentLoaded", () => {
         trepanBtn.style.margin = "0 auto 20px auto"; // Center it
         cvContentElForNeSy.appendChild(trepanBtn);
 
-        const buf = (window as any).rawCVBuffer as Uint8Array;
+        const buf = // deno-lint-ignore no-explicit-any
+          (globalThis as any).rawCVBuffer as Uint8Array;
         let byteOffset = 0;
 
-        for (const node of originalNodes) {
+        for (let i = 0; i < originalNodes.length; i++) {
           const wrap = document.createElement("div");
           wrap.style.fontFamily = "monospace";
           wrap.style.fontSize = "14px";
@@ -1072,7 +1086,7 @@ document.addEventListener("DOMContentLoaded", () => {
           trepanBtn!.textContent = "Extracting Symbols...";
 
           // Randomly decode wrappers at different rates
-          let remaining = wrappers.length;
+          const remaining = wrappers.length;
           const indices = Array.from({ length: remaining }, (_, i) => i);
 
           const decodeInterval = setInterval(() => {
@@ -1115,8 +1129,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // If turned off prematurely, restore immediately
         if (originalNodes.length > 0) {
           cvContentElForNeSy.innerHTML = "";
-          for (const node of originalNodes) {
-            cvContentElForNeSy.appendChild(node);
+          for (let i = 0; i < originalNodes.length; i++) {
+            cvContentElForNeSy.appendChild(originalNodes[i]);
           }
         }
       }
@@ -1298,8 +1312,8 @@ document.addEventListener("DOMContentLoaded", () => {
         excludes.push("projects", "certifications");
       }
 
-      let url = (window.location.hostname === "127.0.0.1" ||
-          window.location.hostname === "localhost")
+      let url = (globalThis.location.hostname === "127.0.0.1" ||
+          globalThis.location.hostname === "localhost")
         ? "http://127.0.0.1:3000/api/cv.pdf"
         : "/api/cv.pdf";
       if (excludes.length > 0) {

@@ -41,7 +41,7 @@ def sync(profile: str = "industry"):
             name = "default"
         if name not in profiles:
             profiles[name] = {"exclude": []}
-        profiles[name]["text"] = p.read_text().strip()
+        profiles[name]["text"] = p.read_text().strip()  # type: ignore
 
     data_dict.setdefault("personal_info", {})["profiles"] = profiles
 

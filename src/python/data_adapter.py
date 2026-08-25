@@ -110,7 +110,7 @@ class DataAdapter:
                     data_dump["personal_info"]["profiles"] = json.loads(
                         data_dump["personal_info"]["profiles"]
                     )
-                except Exception:
+                except Exception:  # noqa: BLE001
                     data_dump["personal_info"]["profiles"] = {}
 
         if "project_hierarchy" in data_dump and len(data_dump["project_hierarchy"]) > 0:

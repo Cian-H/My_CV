@@ -1,5 +1,5 @@
-import ssl
 import json
+import ssl
 import urllib.error
 import urllib.request
 

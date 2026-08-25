@@ -1,12 +1,13 @@
-from logging import Logger
+import logging
+
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
 import numpy as np
 import typer
+from matplotlib import patches
 
 app = typer.Typer()
 
-logger = Logger("logo")
+logger = logging.getLogger("logo")
 main_circle_radius = 5.0
 purple_rgb = (0.29, 0.19, 0.45)
 orange_rgb = (0.85, 0.53, 0.10)
