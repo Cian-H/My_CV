@@ -1314,11 +1314,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
       let url = (globalThis.location.hostname === "127.0.0.1" ||
           globalThis.location.hostname === "localhost")
-        ? "http://127.0.0.1:3000/api/cv.pdf"
-        : "/api/cv.pdf";
+        ? "http://127.0.0.1:3000/api/cv.pdf?"
+        : "/api/cv.pdf?";
+
+      const params = new URLSearchParams();
       if (excludes.length > 0) {
-        url += "?exclude=" + excludes.join(",");
+        params.append("exclude", excludes.join(","));
       }
+
+      const profileSel = document.getElementById(
+        "profile-selector",
+      ) as HTMLSelectElement;
+      if (profileSel && profileSel.value) {
+        params.append("profile", profileSel.value);
+      }
+
+      url += params.toString();
       globalThis.open(url, "_blank");
     });
   }

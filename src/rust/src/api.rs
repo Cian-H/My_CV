@@ -72,13 +72,30 @@ async fn get_cv_pdf(
 #[derive(Deserialize)]
 pub struct CvQuery {
     exclude: Option<String>,
+    profile: Option<String>,
 }
 
 fn filter_cv(mut data: Value, query: &CvQuery) -> Value {
-    if let Some(exclude_str) = &query.exclude {
-        if let Value::Object(ref mut map) = data {
+    if let Value::Object(ref mut map) = data {
+        // Handle exclusions
+        if let Some(exclude_str) = &query.exclude {
             for section in exclude_str.split(',') {
                 map.remove(section.trim());
+            }
+        }
+
+        // Handle profile selection
+        let profile_name = query.profile.as_deref().unwrap_or("general");
+
+        if let Some(personal_info) = map.get_mut("personal_info") {
+            if let Some(pi_map) = personal_info.as_object_mut() {
+                if let Some(profiles) = pi_map.get("profiles") {
+                    if let Some(selected_profile) = profiles.get(profile_name) {
+                        if let Some(text) = selected_profile.get("text") {
+                            pi_map.insert("profile".to_string(), text.clone());
+                        }
+                    }
+                }
             }
         }
     }
