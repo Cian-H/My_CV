@@ -7,6 +7,7 @@
     - "Primary focus is currently on model architecture development and semantic knowledge injection methodologies in the field of symbolic neural networks, i.e: the development of ways to allow human experts to guide and constrain models for more efficient training"
     - "Currently responsible for hiring and managing a PhD student in collaboration with the primary investigator on my project"
     - "Applying a variety of machine learning methods to train models on extremely large datasets (>50GB per sample), using methods such as quantisation, sparsification, data distillation, and data streaming/pipelining to facilitate this"
+    - "Designed and taught a 4th-year university module on distributed computing"
 - title: "Postdoctoral Researcher"
   date: "October 2021 – October 2023"
   organization: "Dublin City University"

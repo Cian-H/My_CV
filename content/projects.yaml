@@ -1,6 +1,6 @@
 - name: "CSC1109: Data Speed and Scale"
-  description: "Single-handedly modernized an aging BSc Data Science module. Replaced legacy Vagrant/Hadoop environments with containerized Docker labs to eliminate dependency hell, completely rewrote course materials, and deployed a modern ReadTheDocs/MkDocs site for students."
-  technologies: ["Docker", "Python", "MkDocs", "Education"]
+  description: "Single-handedly modernized an aging BSc Data Science module on big data processing. Replaced legacy Vagrant environments with containerized Docker labs and deployed a modern ReadTheDocs/MkDocs site. The curriculum covers Hadoop, Hive, Pig, Storm, Spark, and cluster computing, culminating in students designing their own big data distributed analysis systems for targeted purposes."
+  technologies: ["Docker", "Python", "MkDocs", "Hadoop", "Spark", "Hive", "Pig", "Storm", "Education"]
   url: "https://github.com/CA4022/CSC1109-Data-Speed-and-Scale"
 
 - name: "Scanline Annotator"
@@ -72,3 +72,4 @@
   description: "A fully declarative, reproducible operating system configuration using Nix to streamline migration and deployment across personal and server infrastructure."
   technologies: ["Nix", "Linux", "SysAdmin", "DevOps"]
   url: "https://github.com/Cian-H/My_NixOS_Config"
+

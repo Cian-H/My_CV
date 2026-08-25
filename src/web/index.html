@@ -1,94 +1,83 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cian Hughes - CV</title>
-    <meta name="description" content="An experienced postdoctoral researcher with a PhD in mechanical engineering, specializing in AI, machine learning, and research data science." />
+    <meta name="description"
+        content="An experienced postdoctoral researcher with a PhD in mechanical engineering, specializing in AI, machine learning, and research data science." />
     <meta property="og:title" content="Cian Hughes - Research Data Scientist & Engineer" />
-    <meta property="og:description" content="An experienced postdoctoral researcher with a PhD in mechanical engineering, specializing in AI, machine learning, and research data science." />
+    <meta property="og:description"
+        content="An experienced postdoctoral researcher with a PhD in mechanical engineering, specializing in AI, machine learning, and research data science." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.bulba.space" />
     <meta property="og:image" content="https://www.bulba.space/favicon.jpg" />
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono&display=swap"
+        rel="stylesheet" />
     <link rel="icon" href="favicon.jpg" type="image/jpeg" />
     <link rel="stylesheet" href="style.css" />
     <script src="https://unpkg.com/bson@6.8.0/lib/bson.bundle.js"></script>
-  </head>
-  <body>
-    <div class="layout-container">
-      <div class="sidebar controls" id="controls">
-        <div class="controls-header">
-          <strong>Options</strong>
-        </div>
-        <div class="action-buttons" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
-          <button id="download-pdf" class="btn btn-primary" style="width: 100%;">
-            Download PDF
-          </button>
-          <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; width: 100%;">
-            <label for="theme-selector" style="font-weight: 600; margin: 0;">Theme:</label>
-            <select id="theme-selector" class="btn" style="flex-grow: 1; margin-left: 10px;">
-              <option value="auto">Auto (System)</option>
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
-              <option value="solarized-light">Solarized Light</option>
-              <option value="solarized-dark">Solarized Dark</option>
-              <option value="dracula">Dracula</option>
-              <option value="monokai">Monokai</option>
-            </select>
-          </div>
-        </div>
-        <div class="options-list">
-          <label
-            ><input type="checkbox" id="toggle-experience" checked /> Experience
-            / Employment</label
-          >
-          <label
-            ><input type="checkbox" id="toggle-education" checked />
-            Education</label
-          >
-          <label
-            ><input type="checkbox" id="toggle-publications" checked />
-            Publications &amp; Conferences</label
-          >
-          <label
-            ><input type="checkbox" id="toggle-skills" checked /> Skills &amp;
-            Languages</label
-          >
-          <label
-            ><input type="checkbox" id="toggle-projects" checked /> Projects
-            &amp; Certs</label
-          >
-        </div>
+</head>
 
-        <details
-          class="fun-stuff"
-          style="
+<body>
+    <div class="layout-container">
+        <div class="sidebar controls" id="controls">
+            <div class="controls-header">
+                <strong>Options</strong>
+            </div>
+            <div class="action-buttons" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+                <button id="download-pdf" class="btn btn-primary" style="width: 100%;">
+                    Download PDF
+                </button>
+                <div
+                    style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; width: 100%;">
+                    <label for="theme-selector" style="font-weight: 600; margin: 0;">Theme:</label>
+                    <select id="theme-selector" class="btn" style="flex-grow: 1; margin-left: 10px;">
+                        <option value="auto">Auto (System)</option>
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                        <option value="solarized-light">Solarized Light</option>
+                        <option value="solarized-dark">Solarized Dark</option>
+                        <option value="dracula">Dracula</option>
+                        <option value="monokai">Monokai</option>
+                    </select>
+                </div>
+            </div>
+            <div class="options-list">
+                <label><input type="checkbox" id="toggle-experience" checked /> Experience
+                    / Employment</label>
+                <label><input type="checkbox" id="toggle-education" checked />
+                    Education</label>
+                <label><input type="checkbox" id="toggle-publications" checked />
+                    Publications &amp; Conferences</label>
+                <label><input type="checkbox" id="toggle-skills" checked /> Skills &amp;
+                    Languages</label>
+                <label><input type="checkbox" id="toggle-projects" checked /> Projects
+                    &amp; Certs</label>
+            </div>
+
+            <details class="fun-stuff" style="
             margin-top: 15px;
             border-top: 1px solid var(--border-color);
             padding-top: 10px;
-          "
-        >
-          <summary
-            style="cursor: pointer; font-weight: bold; margin-bottom: 5px"
-          >
-            Fun Stuff
-          </summary>
-          <label><input type="checkbox" id="toggle-cat" /> Cat Mode</label>
-          <label><input type="checkbox" id="toggle-retro" /> Retro Mode</label>
-          <label><input type="checkbox" id="toggle-lisp" /> Lisp Mode</label>
-        </details>
-      </div>
+          ">
+                <summary style="cursor: pointer; font-weight: bold; margin-bottom: 5px">
+                    Fun Stuff
+                </summary>
+                <label><input type="checkbox" id="toggle-cat" /> Cat Mode</label>
+                <label><input type="checkbox" id="toggle-retro" /> Retro Mode</label>
+                <label><input type="checkbox" id="toggle-lisp" /> Lisp Mode</label>
+            </details>
+        </div>
 
-      <div id="cv-content" class="main-content">Loading CV...</div>
+        <div id="cv-content" class="main-content">Loading CV...</div>
     </div>
 
     <script src="bundle.js"></script>
-  </body>
+</body>
+
 </html>

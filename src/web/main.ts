@@ -427,6 +427,21 @@ async function renderCV() {
       }
     }
 
+    // --- Service ---
+    if (cv.service && cv.service.length > 0) {
+      cvContent.appendChild(el("h2", "", "Service & Committees"));
+      for (const s of cv.service) {
+        const item = el("div", "exp-item");
+        item.appendChild(el("h3", "", `${s.role} - ${s.organization}`));
+        appendMeta(item, [s.date]);
+        if (s.description) {
+          const p = el("p", "summary", s.description);
+          item.appendChild(p);
+        }
+        cvContent.appendChild(item);
+      }
+    }
+
     // --- Publications & Conferences ---
     if (cv.publications && cv.publications.length > 0) {
       cvContent.appendChild(el("h2", "", "Publications"));

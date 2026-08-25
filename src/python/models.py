@@ -80,6 +80,13 @@ class Language(BaseModel):
     proficiency: str
 
 
+class Service(BaseModel):
+    role: str
+    organization: str
+    date: str
+    description: str | None = None
+
+
 class CVData(BaseModel):
     personal_info: PersonalInfo
     skills: list[Skill]
@@ -91,3 +98,4 @@ class CVData(BaseModel):
     certifications: list[Certification] = []
     conferences: list[Conference] = []
     languages: list[Language] = []
+    service: list[Service] = []

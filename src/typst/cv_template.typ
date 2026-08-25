@@ -123,3 +123,21 @@
     #v(0.5em)
   ]
 ]
+
+#if "service" in cv and cv.service.len() > 0 [
+  #v(1em)
+
+  == SERVICE & COMMITTEES
+
+  #grid(
+    columns: (1fr, 4fr),
+    gutter: 10pt,
+    ..cv
+      .service
+      .map(s => (
+        [*#s.date*],
+        [#strong[#s.role], #s.organization #if "description" in s and s.description != none and s.description != "" [\ #s.description]],
+      ))
+      .flatten()
+  )
+]
