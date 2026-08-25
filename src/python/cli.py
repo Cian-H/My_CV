@@ -10,6 +10,33 @@ from src.python.sync import sync
 app = typer.Typer()
 
 
+@app.callback(invoke_without_command=True)
+def default_callback(ctx: typer.Context):
+    if ctx.invoked_subcommand is None:
+        print("Launching GUI...")
+        try:
+            from src.python.gui import launch_gui
+
+            launch_gui()
+        except ImportError as e:
+            if "libGL" in str(e) or "libxkbcommon" in str(e):
+                import sys
+
+                print(f"\n[Error] Missing system graphics libraries: {e}")
+                print(
+                    "It looks like you are running in a headless environment (like WSL or a container) that lacks UI libraries."
+                )
+                print(
+                    "To fix this, install the missing libraries (e.g. on Ubuntu/Debian: `sudo apt-get install libgl1 libxkbcommon-x11-0`)"
+                )
+                print(
+                    "Alternatively, you can continue using the CLI subcommands (run `cv --help` for options)."
+                )
+                sys.exit(1)
+            else:
+                raise
+
+
 @app.command(name="sync")
 def sync_cmd(
     profile: str = typer.Option(

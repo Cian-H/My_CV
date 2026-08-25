@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"]
+  },
+  "lint": {
+    "exclude": [".venv", "build"]
+  },
+  "fmt": {
+    "exclude": [".venv", "build"]
+  },
+  "exclude": [".venv", "build"]
+}

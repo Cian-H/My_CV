@@ -5,7 +5,22 @@
 }: {
   env.HDF5_DIR = "${config.env.DEVENV_ROOT}/.devenv/profile";
   env.RUSTFLAGS = "-C link-args=-Wl,-rpath,${config.env.DEVENV_ROOT}/.devenv/profile/lib";
-  env.LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib ];
+  env.LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
+    pkgs.stdenv.cc.cc.lib
+    pkgs.libGL
+    pkgs.libxkbcommon
+    pkgs.fontconfig
+    pkgs.freetype
+    pkgs.zlib
+    pkgs.xorg.libX11
+    pkgs.xorg.libXcursor
+    pkgs.xorg.libxcb
+    pkgs.xorg.libXi
+    pkgs.xorg.libXext
+    pkgs.wayland
+    pkgs.dbus
+    pkgs.glib
+  ];
 
   packages = [
     pkgs.cargo
