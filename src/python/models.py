@@ -104,3 +104,4 @@ class CVData(BaseModel):
     conferences: list[Conference] = []
     languages: list[Language] = []
     service: list[Service] = []
+    project_hierarchy: dict[str, list[str]] = {}

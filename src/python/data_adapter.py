@@ -24,6 +24,9 @@ class DataAdapter:
             if "profiles" in dump["personal_info"]:
                 dump["personal_info"]["profiles"] = json.dumps(dump["personal_info"]["profiles"])
 
+        if "project_hierarchy" in dump:
+            dump["project_hierarchy"] = {"hierarchy": json.dumps(dump["project_hierarchy"])}
+
         with h5py.File(self.h5_filepath, "w") as f:
             for name, data in dump.items():
                 if not data:
@@ -98,5 +101,12 @@ class DataAdapter:
                     data_dump["personal_info"]["profiles"] = json.loads(data_dump["personal_info"]["profiles"])
                 except Exception:
                     data_dump["personal_info"]["profiles"] = {}
+
+        if "project_hierarchy" in data_dump and len(data_dump["project_hierarchy"]) > 0:
+            val = data_dump["project_hierarchy"][0].get("hierarchy")
+            if isinstance(val, str):
+                data_dump["project_hierarchy"] = json.loads(val)
+            else:
+                data_dump["project_hierarchy"] = {}
 
         return CVData(**data_dump)
