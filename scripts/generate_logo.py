@@ -15,9 +15,11 @@ bg_color = (0.05, 0.05, 0.05)
 
 @app.command()
 def generate_logo(
-    filename: str = typer.Option("logo.png", "--filename", "-f", help="Output filepath"),
+    filename: str = typer.Option(
+        "logo.png", "--filename", "-f", help="Output filepath"
+    ),
     seed: int = typer.Option(137, "--seed", "-s", help="Random seed"),
-    num_nodes: int = typer.Option(12, "--num-nodes", "-n", help="Number of hexagons")
+    num_nodes: int = typer.Option(12, "--num-nodes", "-n", help="Number of hexagons"),
 ):
     fig, ax = plt.subplots(figsize=(10, 10))
     ax.set_aspect("equal")

@@ -953,53 +953,53 @@ async function renderCV() {
     const tocContainer = document.getElementById("toc-container");
     if (tocContainer) {
       tocContainer.innerHTML = "";
-      
+
       const details = document.createElement("details");
       details.className = "toc-details";
       // Open by default on desktop, closed on mobile
       if (window.innerWidth > 768) {
-          details.open = true;
+        details.open = true;
       }
-      
+
       const summary = document.createElement("summary");
       summary.style.cursor = "pointer";
       summary.style.fontWeight = "bold";
       summary.style.userSelect = "none";
-      
+
       const tocHeader = el("h3", "", "Table of Contents");
       tocHeader.style.display = "inline";
       tocHeader.style.margin = "0";
-      
+
       summary.appendChild(tocHeader);
       details.appendChild(summary);
-      
+
       const h2s = cvContent.querySelectorAll("h2");
       const tocList = el("div");
       tocList.style.display = "flex";
       tocList.style.gap = "8px";
       tocList.style.marginTop = "12px";
       tocList.className = "toc-list";
-      
+
       let i = 0;
-      h2s.forEach(h2 => {
-          const id = "section-" + i;
-          h2.id = id;
-          i++;
-          
-          const link = document.createElement("a");
-          link.href = "#" + id;
-          link.textContent = h2.textContent;
-          link.className = "toc-link";
-          
-          link.onclick = () => {
-              if (window.innerWidth <= 768) {
-                  details.open = false;
-              }
-          };
-          
-          tocList.appendChild(link);
+      h2s.forEach((h2) => {
+        const id = "section-" + i;
+        h2.id = id;
+        i++;
+
+        const link = document.createElement("a");
+        link.href = "#" + id;
+        link.textContent = h2.textContent;
+        link.className = "toc-link";
+
+        link.onclick = () => {
+          if (window.innerWidth <= 768) {
+            details.open = false;
+          }
+        };
+
+        tocList.appendChild(link);
       });
-      
+
       details.appendChild(tocList);
       tocContainer.appendChild(details);
     }

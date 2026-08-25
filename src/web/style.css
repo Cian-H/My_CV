@@ -167,7 +167,6 @@ a:hover {
   color: var(--text-color);
 }
 
-
 .left-column {
   align-self: stretch;
   display: flex;
@@ -306,7 +305,6 @@ body.retro-mode::after {
   }
 }
 
-
 /* Hide the ToC on mobile by default, or maybe show it as a horizontal scrollable row? */
 @media (max-width: 768px) {
   .left-column {
@@ -318,10 +316,6 @@ body.retro-mode::after {
     max-height: none;
     overflow-y: visible;
   }
-  
-
-  
-
 }
 
 .toc-list {
@@ -355,7 +349,8 @@ body.retro-mode::after {
     top: 10px !important;
     z-index: 1000;
     max-height: calc(100vh - 20px) !important;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0,
+      0.06);
   }
   .toc-list {
     flex-direction: column;
@@ -366,8 +361,8 @@ body.retro-mode::after {
   }
 }
 
-
-h2, h3 {
+h2,
+h3 {
   scroll-margin-top: 80px;
 }
 

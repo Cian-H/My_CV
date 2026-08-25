@@ -34,109 +34,130 @@
   <body>
     <div class="layout-container">
       <div class="left-column">
-      <div class="sidebar controls" id="controls">
-        <div class="controls-header">
-          <strong>Options</strong>
+        <div class="sidebar controls" id="controls">
+          <div class="controls-header">
+            <strong>Options</strong>
+          </div>
+          <div
+            class="action-buttons"
+            style="
+              display: flex;
+              flex-direction: column;
+              gap: 12px;
+              width: 100%;
+            "
+          >
+            <button
+              id="download-pdf"
+              class="btn btn-primary"
+              style="width: 100%"
+            >
+              Download PDF
+            </button>
+            <div
+              style="
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+              "
+            >
+              <label for="theme-selector" style="font-weight: 600; margin: 0"
+                >Theme:</label
+              >
+              <select
+                id="theme-selector"
+                class="btn"
+                style="flex-grow: 1; margin-left: 10px"
+              >
+                <option value="auto">Auto (System)</option>
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+                <option value="solarized-light">Solarized Light</option>
+                <option value="solarized-dark">Solarized Dark</option>
+                <option value="dracula">Dracula</option>
+                <option value="monokai">Monokai</option>
+              </select>
+            </div>
+            <div
+              style="
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+                margin-top: 10px;
+              "
+            >
+              <label for="profile-selector" style="font-weight: 600; margin: 0"
+                >Target Audience:</label
+              >
+              <select
+                id="profile-selector"
+                class="btn"
+                style="flex-grow: 1; margin-left: 10px"
+              >
+                <option value="industry">Industry</option>
+                <option value="academic">Academic</option>
+                <option value="general" selected>General</option>
+              </select>
+            </div>
+          </div>
+          <div class="options-list">
+            <label
+              ><input type="checkbox" id="toggle-experience" checked />
+              Experience / Employment</label
+            >
+            <label
+              ><input type="checkbox" id="toggle-education" checked />
+              Education</label
+            >
+            <label
+              ><input type="checkbox" id="toggle-publications" checked />
+              Publications &amp; Conferences</label
+            >
+            <label
+              ><input type="checkbox" id="toggle-skills" checked /> Skills &amp;
+              Languages</label
+            >
+            <label
+              ><input type="checkbox" id="toggle-projects" checked /> Projects
+              &amp; Certs</label
+            >
+          </div>
+
+          <details
+            class="fun-stuff"
+            style="
+              margin-top: 15px;
+              border-top: 1px solid var(--border-color);
+              padding-top: 10px;
+            "
+          >
+            <summary
+              style="cursor: pointer; font-weight: bold; margin-bottom: 5px"
+            >
+              Fun Stuff
+            </summary>
+            <label><input type="checkbox" id="toggle-cat" /> Cat Mode</label>
+            <label
+              ><input type="checkbox" id="toggle-retro" /> Retro Mode</label
+            >
+            <label><input type="checkbox" id="toggle-lisp" /> Lisp Mode</label>
+          </details>
         </div>
         <div
-          class="action-buttons"
-          style="display: flex; flex-direction: column; gap: 12px; width: 100%"
-        >
-          <button id="download-pdf" class="btn btn-primary" style="width: 100%">
-            Download PDF
-          </button>
-          <div
-            style="
-              display: flex;
-              flex-direction: row;
-              align-items: center;
-              justify-content: space-between;
-              width: 100%;
-            "
-          >
-            <label for="theme-selector" style="font-weight: 600; margin: 0"
-              >Theme:</label
-            >
-            <select
-              id="theme-selector"
-              class="btn"
-              style="flex-grow: 1; margin-left: 10px"
-            >
-              <option value="auto">Auto (System)</option>
-              <option value="light">Light</option>
-              <option value="dark">Dark</option>
-              <option value="solarized-light">Solarized Light</option>
-              <option value="solarized-dark">Solarized Dark</option>
-              <option value="dracula">Dracula</option>
-              <option value="monokai">Monokai</option>
-            </select>
-          </div>
-          <div
-            style="
-              display: flex;
-              flex-direction: row;
-              align-items: center;
-              justify-content: space-between;
-              width: 100%;
-              margin-top: 10px;
-            "
-          >
-            <label for="profile-selector" style="font-weight: 600; margin: 0"
-              >Target Audience:</label
-            >
-            <select
-              id="profile-selector"
-              class="btn"
-              style="flex-grow: 1; margin-left: 10px"
-            >
-              <option value="industry">Industry</option>
-              <option value="academic">Academic</option>
-              <option value="general" selected>General</option>
-            </select>
-          </div>
-        </div>
-        <div class="options-list">
-          <label
-            ><input type="checkbox" id="toggle-experience" checked /> Experience
-            / Employment</label
-          >
-          <label
-            ><input type="checkbox" id="toggle-education" checked />
-            Education</label
-          >
-          <label
-            ><input type="checkbox" id="toggle-publications" checked />
-            Publications &amp; Conferences</label
-          >
-          <label
-            ><input type="checkbox" id="toggle-skills" checked /> Skills &amp;
-            Languages</label
-          >
-          <label
-            ><input type="checkbox" id="toggle-projects" checked /> Projects
-            &amp; Certs</label
-          >
-        </div>
-
-        <details
-          class="fun-stuff"
+          id="toc-container"
+          class="controls"
           style="
-            margin-top: 15px;
-            border-top: 1px solid var(--border-color);
-            padding-top: 10px;
+            position: sticky;
+            top: 40px;
+            margin-top: 20px;
+            max-height: calc(100vh - 80px);
+            overflow-y: auto;
           "
-        >
-          <summary
-            style="cursor: pointer; font-weight: bold; margin-bottom: 5px"
-          >
-            Fun Stuff
-          </summary>
-          <label><input type="checkbox" id="toggle-cat" /> Cat Mode</label>
-          <label><input type="checkbox" id="toggle-retro" /> Retro Mode</label>
-          <label><input type="checkbox" id="toggle-lisp" /> Lisp Mode</label>
-        </details>
-      </div>
-      <div id="toc-container" class="controls" style="position: sticky; top: 40px; margin-top: 20px; max-height: calc(100vh - 80px); overflow-y: auto;"></div>
+        ></div>
       </div>
 
       <div id="cv-content" class="main-content">Loading CV...</div>
