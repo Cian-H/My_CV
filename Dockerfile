@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libhdf5-dev pkg-config && \
     rm -rf /var/lib/apt/lists/*
 
-RUN wget -q https://github.com/typst/typst/releases/download/v0.11.1/typst-x86_64-unknown-linux-musl.tar.xz && \
+RUN wget -q https://github.com/typst/typst/releases/download/v0.15.1/typst-x86_64-unknown-linux-musl.tar.xz && \
     tar -xf typst-x86_64-unknown-linux-musl.tar.xz && \
     mv typst-x86_64-unknown-linux-musl/typst /usr/local/bin/typst && \
     rm -rf typst*
