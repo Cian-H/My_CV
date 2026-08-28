@@ -11,9 +11,6 @@ links:
   - name: Gitea
     url: https://gitea.bulba.space
     icon: https://cdn.simpleicons.org/gitea
-  - name: Blog
-    url: https://blog.bulba.space
-    icon: https://cdn.simpleicons.org/rss
   - name: Google Scholar
     url: https://scholar.google.com/citations?user=Rn6JTuAAAAAJ
     icon: https://cdn.simpleicons.org/googlescholar

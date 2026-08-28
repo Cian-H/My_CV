@@ -1,132 +1,14 @@
-- category: Technical
-  description: 10+ yrs high performance programming experience (Python, Rust, Fortran, Julia, Elixir)
-  tags:
-    - Python
-    - Rust
-    - Fortran
-    - Julia
-    - Elixir
-    - Languages
-- category: Technical
-  description: Experience developing ML models (PyTorch, Keras/Tensorflow, XGBoost)
-  tags:
-    - Machine Learning
-    - AI
-    - PyTorch
-- category: Technical
-  description: "Experience with large, quantized, sparse datasets in mixed hardware settings (e.g: CPUs, GPUs, TPUs, FPGAs)"
-  tags:
-    - High-Performance
-    - Data Analysis
-- category: Technical
-  description: Project lead for high-throughput data processing libraries using vector processing, GPGPU, SIMD
-  tags:
-    - High-Performance
-    - Algorithms
-- category: Technical
-  description: "Administrator of data repository servers: Invenio deployments via docker and kubernetes on AWS"
-  tags:
-    - CERN Invenio
-    - Docker
-    - Linux
-- category: Technical
-  description: Proficient in distributed Big Data processing frameworks and ecosystem tooling (Hadoop, Apache Spark, Hive, Pig, Storm)
-  tags:
-    - Hadoop
-    - Spark
-    - Hive
-    - Pig
-    - Storm
-- category: Technical
-  description: Well versed in debugging, benchmarking, profiling, program optimisation (pdb, snoop, timeit, criterion, godbolt, cachegrind, massif)
-  tags:
-    - DevOps
-    - Automation
-- category: Personal
-  description: "Ability to work collaboratively in team, project management activities, e.g.: development of data science libraries"
-  tags:
-    - Project Management
-    - Teamwork
-- category: Personal
-  description: Experienced in management of PhD students, masters students, research assistants
-  tags:
-    - Leadership
-    - Mentorship
-- category: Personal
-  description: Excellent critical thinking and problem solving ability
-  tags:
-    - Problem Solving
-- category: Personal
-  description: Written/oral/language skills, demonstrated by publication, teaching (e.g. development of university course materials for HPC CS lab), and active technical blogging.
-  tags:
-    - Communication
-    - Teaching
-- category: Personal
-  description: Strong in interdisciplinary engineering, sciences, and mathematical analysis
-  tags:
-    - Mathematics
-    - Physical Sciences
-- category: Personal
-  description: Experienced at problem solving and self learning
-  tags:
-    - Problem Solving
-    - Self-Learning
-- category: Technical
-  description: Expertise in declarative infrastructure, reproducible OS configurations, and automated research deployments (Nix, NixOS, CI/CD Pipelines)
-  tags:
-    - Nix
-    - Docker
-    - Linux
-    - DevOps
-- category: Technical
-  description: Experience engineering Generative AI integrations (Local LLMs, OpenWebUI, RAG) and researching Neuro-Symbolic Artificial Intelligence architectures
-  tags:
-    - Generative AI
-    - LLMs
-    - Symbolic AI
-    - AI
-- category: Technical
-  description: Competent in full-stack web development and native UI design, building reactive interfaces for scientific projects (Svelte, QML)
-  tags:
-    - Svelte
-    - QML
-    - Frontend
-    - Web Development
-- category: Technical
-  description: Domain expertise in Additive Manufacturing and Image Processing, seamlessly linking physical system behavior with advanced algorithmic analysis
-  tags:
-    - Additive Manufacturing
-    - Image Processing
-- category: Technical
-  description: Deep understanding of language internals, metaprogramming, and functional programming paradigms (Clojure, Lisp/Scheme, Python ASTs)
-  tags:
-    - Metaprogramming
-    - Functional Programming
-    - Clojure
-    - PL Theory
-- category: Technical
-  description: Experience with cluster architecture design and deployment for HPC environments (Slurm-on-Kubernetes, Ceph distributed storage, and integration with DCU SoC's prototype compute architecture).
-  tags:
-    - High-Performance
-    - Linux
-    - Data Management
-- category: Personal
-  description: Proven ability to translate complex HPC and machine learning concepts to non-technical stakeholders, management, and domain experts.
-  tags:
-    - Communication
-    - Leadership
-- category: Personal
-  description: Experienced at distilling open-ended scientific research questions into actionable, scoped technical roadmaps and software architectures.
-  tags:
-    - Project Management
-    - Problem Solving
-- category: Personal
-  description: Strong advocate for open-science, reproducible research pipelines, and open-source software development.
-  tags:
-    - Open Science
-    - Reproducibility
-- category: Personal
-  description: Experienced in authoring technical proposals, grant applications, and strategic architectural documentation.
-  tags:
-    - Communication
-    - Grant Writing
+- category: Languages & Frameworks
+  description: Python, Rust, Fortran, Julia, Elixir, Clojure
+- category: Machine Learning & AI
+  description: PyTorch, Keras/Tensorflow, XGBoost, LLMs, RAG, Neuro-Symbolic AI
+- category: Big Data & HPC
+  description: Hadoop, Apache Spark, Hive, Pig, Storm, Vector Processing (SIMD, GPGPU),
+    Distributed Computing
+- category: DevOps & Infrastructure
+  description: Linux, Docker, Kubernetes, Nix/NixOS, CI/CD, Ceph, CERN Invenio
+- category: Scientific Methodologies
+  description: Additive Manufacturing, Image Processing, Laser Powder Bed Fusion
+- category: Professional Core Competencies
+  description: Project Management, Research Leadership, Interdisciplinary Communication,
+    Open Science & Reproducibility, Grant Writing, Technical Mentorship

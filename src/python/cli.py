@@ -51,14 +51,23 @@ def generate_static_cmd(
         "general", help="Profile to use (e.g. academic, industry)"
     ),
     tags: str = typer.Option(
-        "", help="Comma-separated keywords/tags to filter by"
+        "", help="Comma-separated keywords/tags to filter by (inclusion)"
+    ),
+    exclude_tags: str = typer.Option(
+        "", help="Comma-separated keywords/tags to explicitly exclude"
+    ),
+    output: str = typer.Option(
+        "build/My_CV_Generated.pdf", help="Output filepath for the PDF"
     ),
 ):
-    """Generate the static PDF CV into the build/ directory. Use --exclude to comma-separate sections to exclude, and --tags to filter by keywords."""
+    """Generate the static PDF CV. Use --exclude to comma-separate sections to exclude, and --tags to filter by keywords."""
     print(f"Generating static CV with profile {profile}...")
     excludes = [e.strip() for e in exclude.split(",")] if exclude else None
     filter_tags = [t.strip() for t in tags.split(",")] if tags else None
-    generate_static(excludes, profile, filter_tags)
+    exclude_tags_list = (
+        [t.strip() for t in exclude_tags.split(",")] if exclude_tags else None
+    )
+    generate_static(excludes, profile, filter_tags, exclude_tags_list, output)
 
 
 @app.command(name="build-frontend")

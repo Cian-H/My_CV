@@ -1,143 +1,19 @@
-#let cv_path = sys.inputs.at("cv_data_path", default: "/build/cv_data.json")
-#let cv = json(cv_path)
+#import "clean_print_cv.typ": *
 
-#set page(margin: (x: 1.5cm, y: 1.5cm))
-#set text(font: "Linux Libertine", size: 10pt)
+#let cv_path = sys.inputs.at("cv_data_path", default: "/build/clean_cv_data.json")
+#let data = json(cv_path)
 
-#show heading: set text(fill: rgb("1C4587"))
+#show: cv-page-setup
 
-#align(center)[
-  #text(size: 20pt, weight: "bold", fill: rgb("1C4587"))[#cv.personal_info.name]
-
-  *Email:* #cv.personal_info.email
-  #if (
-    "city" in cv.personal_info and "country" in cv.personal_info
-  ) [ | *Location:* #cv.personal_info.city, #cv.personal_info.country]
-  #if (
-    "orcid" in cv.personal_info
-  ) [ | *ORCID:* #link(cv.personal_info.orcid)[#cv.personal_info.orcid.replace("https://orcid.org/", "")]]
-
-  #if "links" in cv.personal_info and cv.personal_info.links.len() > 0 [
-    #(
-      cv
-        .personal_info
-        .links
-        .map(
-          l => [*#l.name:* #link(l.url)[#l.url.replace("https://", "").replace("http://", "")]],
-        )
-        .join(" | ")
-    )
-  ]
-]
-
-#v(1em)
-
-== PROFILE
-#cv.personal_info.profile
-
-#v(1em)
-
-#if "skills" in cv [
-  == SKILLS
-
-  #grid(
-    columns: (1fr, 1fr),
-    gutter: 20pt,
-    [
-      #align(center)[*Technical*]
-      #for skill in cv.skills {
-        if skill.category == "Technical" [
-          - #skill.description
-        ]
-      }
-    ],
-    [
-      #align(center)[*Personal*]
-      #for skill in cv.skills {
-        if skill.category == "Personal" [
-          - #skill.description
-        ]
-      }
-    ],
-  )
-
-  #v(1em)
-
-]
-
-#if "experience" in cv or "employment" in cv [
-  == EMPLOYMENT EXPERIENCE
-
-  #if "experience" in cv and cv.experience.len() > 0 [
-    #for exp in cv.experience [
-      #strong[#exp.organization#if exp.location != none [, #exp.location]] \
-      #strong[#exp.title], #exp.date
-      #for bullet in exp.bullets [
-        - #bullet
-      ]
-      #v(0.5em)
-    ]
-  ] else if "employment" in cv and cv.employment.len() > 0 [
-    #for emp in cv.employment [
-      #strong[#emp.organization#if emp.department != none [, #emp.department]] \
-      #strong[#emp.role], #emp.start_date - #if emp.end_date != none [#emp.end_date] else [Present]
-      #v(0.5em)
-    ]
-  ]
-
-  #v(1em)
-
-]
-
-#if "education" in cv [
-  == EDUCATION
-
-  #grid(
-    columns: (1fr, 4fr),
-    gutter: 10pt,
-    ..cv
-      .education
-      .map(edu => (
-        [*#edu.date*],
-        [#edu.degree, #edu.institution #if "description" in edu and edu.description != none and edu.description != "" [\ #edu.description]],
-      ))
-      .flatten()
-  )
-
-]
-
-#if "publications" in cv and cv.publications.len() > 0 [
-  #v(1em)
-
-  == PUBLICATIONS
-
-  #for pub in cv.publications [
-    #strong[#pub.title] \
-    #pub.journal, #pub.year
-    #if "doi" in pub and pub.doi != none and pub.doi != "" [
-      | #link("https://doi.org/" + pub.doi)[DOI]
-    ]
-    #if "url" in pub and pub.url != none and pub.url != "" [
-      | #link(pub.url)[Link]
-    ]
-    #v(0.5em)
-  ]
-]
-
-#if "service" in cv and cv.service.len() > 0 [
-  #v(1em)
-
-  == SERVICE & COMMITTEES
-
-  #grid(
-    columns: (1fr, 4fr),
-    gutter: 10pt,
-    ..cv
-      .service
-      .map(s => (
-        [*#s.date*],
-        [#strong[#s.role], #s.organization #if "description" in s and s.description != none and s.description != "" [\ #s.description]],
-      ))
-      .flatten()
-  )
-]
+#if "personal" in data [ #cv-header(data.personal) ]
+#if "summary" in data and data.summary != "" [ #cv-summary(data.summary) ]
+#if "experience" in data and data.experience.len() > 0 [ #cv-experience(data.experience) ]
+#let edu = if "education" in data { data.education } else { () }
+#let certs = if "certifications" in data { data.certifications } else { () }
+#if edu.len() > 0 or certs.len() > 0 [ #cv-education-and-certifications(edu, certs) ]
+#if "skills" in data and data.skills.len() > 0 [ #cv-skills(data.skills) ]
+#if "publications" in data and data.publications.len() > 0 [ #cv-publications(data.publications) ]
+#if "projects" in data and data.projects.len() > 0 [ #cv-projects(data.projects) ]
+#if "service" in data and data.service.len() > 0 [ #cv-service(data.service) ]
+#if "conferences" in data and data.conferences.len() > 0 [ #cv-conferences(data.conferences) ]
+#if "languages" in data and data.languages.len() > 0 [ #cv-languages(data.languages) ]

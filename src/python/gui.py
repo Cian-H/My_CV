@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 import yaml
-from magicgui.widgets import CheckBox, ComboBox, Container, Label, PushButton, Select
+from magicgui.widgets import CheckBox, ComboBox, Container, Label, PushButton
 
 from src.python.cli import build_api, build_frontend, generate_static_cmd, sync_cmd
 from src.python.models import CVData
@@ -15,7 +15,7 @@ def get_tags():
             from src.python.data_adapter import DataAdapter
 
             cv = DataAdapter("cv_data.h5").load_cv()
-            for sec, items in cv.model_dump().items():
+            for items in cv.model_dump().values():
                 if isinstance(items, list):
                     for item in items:
                         if isinstance(item, dict):
@@ -23,9 +23,9 @@ def get_tags():
                                 tags.update(item["tags"])
                             if item.get("technologies"):
                                 tags.update(item["technologies"])
-        except Exception:
+        except Exception:  # noqa: BLE001, S110
             pass
-    return sorted(list(tags))
+    return sorted(tags)
 
 
 def get_profiles():
@@ -38,7 +38,7 @@ def get_profiles():
 
             cv = DataAdapter("cv_data.h5").load_cv()
             profiles_set.update(cv.personal_info.profiles.keys())
-        except Exception:
+        except Exception:  # noqa: BLE001, S110
             pass
 
     # Fallback / merge with content/
@@ -54,12 +54,12 @@ def get_profiles():
                 p_data = yaml.safe_load(f)
                 if p_data:
                     profiles_set.update(p_data.keys())
-        except Exception:
+        except Exception:  # noqa: BLE001, S110
             pass
 
     if not profiles_set:
         profiles_set = {"general", "academic", "industry"}
-    return sorted(list(profiles_set))
+    return sorted(profiles_set)
 
 
 def launch_gui():
@@ -94,7 +94,7 @@ def launch_gui():
 
     sections = [
         k
-        for k in CVData.model_fields.keys()
+        for k in CVData.model_fields
         if k not in ("personal_info", "project_hierarchy")
     ]
     toggles = {}
@@ -113,7 +113,29 @@ def launch_gui():
     )
 
     all_tags = get_tags()
-    tag_select = Select(choices=all_tags, label="Filter Keywords\n(Empty = All)")
+    tag_checkboxes = {}
+    for tag in all_tags:
+        tag_checkboxes[tag] = CheckBox(value=False, text=tag)
+
+    # Split tags into 4 columns to save vertical space
+    cols = 4
+    items_per_col = (len(all_tags) + cols - 1) // cols
+    tag_cols = []
+    for i in range(cols):
+        col_items = list(tag_checkboxes.values())[
+            i * items_per_col : (i + 1) * items_per_col
+        ]
+        tag_cols.append(Container(widgets=col_items, layout="vertical", labels=False))
+
+    tag_toggles_container = Container(
+        widgets=tag_cols, layout="horizontal", labels=False
+    )
+
+    from magicgui.widgets import FileEdit
+
+    output_file_edit = FileEdit(
+        value=Path("build/My_CV_Generated.pdf"), label="Output Path", mode="w"
+    )
 
     static_btn = PushButton(text="Build Static PDF")
     warning_label = Label(value="")
@@ -125,18 +147,20 @@ def launch_gui():
         excludes = [sec for sec, checkbox in toggles.items() if not checkbox.value]
         exclude_str = ",".join(excludes)
 
-        # tag_select.value is a tuple/list of selected choices
-        selected_tags = tag_select.value
+        selected_tags = [tag for tag, cb in tag_checkboxes.items() if cb.value]
         tags_str = ",".join(selected_tags) if selected_tags else ""
 
+        output_path_str = str(output_file_edit.value)
+
         try:
-            generate_static_cmd(exclude_str, static_profile.value, tags_str)
+            generate_static_cmd(
+                exclude_str, static_profile.value, tags_str, output_path_str
+            )
 
             import re
 
-            pdf_path = "build/My_CV_Generated.pdf"
-            if os.path.exists(pdf_path):
-                with open(pdf_path, "rb") as pdf_file:
+            if os.path.exists(output_path_str):
+                with open(output_path_str, "rb") as pdf_file:
                     match = re.search(
                         rb"/Type\s*/Pages\s*/Count\s*(\d+)", pdf_file.read()
                     )
@@ -152,9 +176,14 @@ def launch_gui():
     static_container = Container(
         widgets=[
             static_profile,
+            output_file_edit,
             Label(value="<b>Include Sections:</b>"),
             toggles_container,
-            tag_select,
+            Label(
+                value="<br><b>Filter Keywords (Leave all unchecked for no filtering):</b>"
+            ),
+            tag_toggles_container,
+            Label(value="<br>"),
             static_btn,
             warning_label,
         ],

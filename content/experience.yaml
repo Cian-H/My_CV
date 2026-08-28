@@ -1,80 +1,81 @@
-- title: "Postdoctoral Researcher"
-  date: "October 2023 – Present"
-  organization: "Dublin City University"
-  location: "Dublin, Ireland"
+- title: Postdoctoral Researcher in Neuro-Symbolic AI
+  date: "October 2023 \u2013 Present"
+  organization: Dublin City University
   bullets:
-    - "Researching as part of I-Form research centre, applying various ML methods to metal 3d printing datasets"
-    - "Primary focus is currently on model architecture development and semantic knowledge injection methodologies in the field of symbolic neural networks, i.e: the development of ways to allow human experts to guide and constrain models for more efficient training"
-    - "Currently responsible for hiring and managing a PhD student in collaboration with the primary investigator on my project"
-    - "Applying a variety of machine learning methods to train models on extremely large datasets (>50GB per sample), using methods such as quantisation, sparsification, data distillation, and data streaming/pipelining to facilitate this"
-    - "Designed and taught a 4th-year university module on distributed computing"
-- title: "Postdoctoral Researcher"
-  date: "October 2021 – October 2023"
-  organization: "Dublin City University"
-  location: "Dublin, Ireland"
+    - Optimized metal 3D printing datasets using machine learning methodologies at the
+      I-Form research centre.
+    - Developed model architectures and semantic knowledge injection methods for symbolic
+      neural networks.
+    - Managed the recruitment and supervision of a PhD researcher with the primary investigator.
+    - Trained ML models on massive datasets (>50GB) utilizing quantization, sparsification,
+      and data streaming.
+    - Designed and delivered a 4th-year university module on distributed computing.
+- title: Postdoctoral Researcher in Biosensor Fabrication
+  date: "October 2021 \u2013 October 2023"
+  organization: Dublin City University
   bullets:
-    - 'Research as part of a joint Fraunhofer Institute and I-Form research centre project, on the topic of "Novel Fabrication Methods for Protein Digestion Based Biosensors"'
-    - "Developed a new method for fabricating biosensor electrodes to be used in protein digestion based sensors"
-    - "Designed method using metal 3d printing and Electrochemical Impedance Spectroscopy (EIS) as basis for a biosensor"
-    - "Further developed internal libraries for data handling/analysis"
-- title: "Postdoctoral Researcher"
-  date: "August 2020 – October 2021"
-  organization: "Dublin City University"
-  location: "Dublin, Ireland"
+    - Developed novel electrode fabrication methods for protein digestion biosensors
+      with Fraunhofer Institute.
+    - Designed a biosensor framework leveraging metal 3D printing and Electrochemical
+      Impedance Spectroscopy.
+    - Engineered custom data analysis libraries for processing high-throughput sensor
+      data.
+- title: Postdoctoral Researcher in Additive Manufacturing
+  date: "August 2020 \u2013 October 2021"
+  organization: Dublin City University
   bullets:
-    - 'Lead Researcher as part of the I-Form research centre, on the topic of "Improved Methodology for Closed Loop Control in AM"'
-    - "Responsible for development of data acquisition/handling tools for laser powder bed fusion based metal 3d printing"
-    - "Tested various in-situ methods such as ultrasonic monitoring"
-    - "Implemented internal libraries for big data handling, analysis and computations on HPC cluster. Built on top of libraries such as dask, using optimised rust code via FFI bindings."
-- title: "Postgraduate Research Assistant"
-  date: "January 2020 – August 2020"
-  organization: "Dublin City University"
-  location: "Dublin, Ireland"
+    - Led I-Form research evaluating improved methodologies for closed-loop control
+      in additive manufacturing.
+    - Developed data acquisition and handling tools for laser powder bed fusion-based
+      metal 3D printing.
+    - Evaluated in-situ monitoring methods including ultrasonic and acoustic emission
+      sensors.
+    - Implemented HPC big data libraries built on Dask utilizing optimized Rust code
+      via FFI bindings.
+- title: Postgraduate Research Assistant (EU Erasmus+ iCARE)
+  date: "January 2020 \u2013 August 2020"
+  organization: Dublin City University
   bullets:
-    - "Project Manager as part of the EU Erasmus+ iCARE project"
-    - "Responsible for managing project progress on work packages and ensuring continued progress"
-    - "Responsible for facilitating the dissemination of research and expertise as part of the project"
-- title: "Postgraduate Research Assistant"
-  date: "November 2019 – April 2020"
-  organization: "Dublin City University"
-  location: "Dublin, Ireland"
+    - Managed project work packages and facilitated research dissemination for the EU
+      Erasmus+ iCARE project.
+- title: Postgraduate Research Assistant in Educational Machine Learning
+  date: "November 2019 \u2013 April 2020"
+  organization: Dublin City University
   bullets:
-    - "Early stages of project intended to develop way to plug in and apply machine learning methods to university teaching tools such as Moodle"
-    - "Early steps included the setup of a Moodle test instance, decisions on which tools to utilise, and basic experiments analysing course data"
-    - "Collaboration with research group who had developed other Moodle plugins using WxMaxima"
-    - "However, project was stopped due to disruptions to teaching at beginning of the Covid-19 pandemic"
-- title: "Laboratory Demonstrator & Tutor"
-  date: "July 2015 – December 2019"
-  organization: "Dublin City University"
-  location: "Dublin, Ireland"
+    - Evaluated tools for integrating machine learning into university platforms via
+      a Moodle test instance.
+    - Collaborated with a research group developing Moodle plugins using WxMaxima.
+    - "Note: project ended early due to the Covid-19 pandemic."
+- title: Laboratory Demonstrator & Tutor
+  date: "July 2015 \u2013 December 2019"
+  organization: Dublin City University
   bullets:
-    - "Responsible for demonstrating experimental setups"
-    - "Responsible for teaching students to develop experimental methods and use theoretical concepts in applied setting"
-    - "Responsible for marking and grading student submissions and examinations"
-    - "Taught numerous courses during this time period, including Classical Mechanisms, Pneumatics, Applied Mathematics, and Materials Science and Engineering"
-- title: "Research Assistant"
-  date: "October 2014 – April 2015"
-  organization: "Dublin City University"
-  location: "Dublin, Ireland"
+    - Demonstrated experimental setups and instructed students in applied theoretical
+      concepts.
+    - Graded student submissions and examinations.
+    - Instructed courses spanning Classical Mechanisms, Pneumatics, Applied Mathematics,
+      and Materials Science.
+- title: Research Assistant in Pharmaceutical Synthesis
+  date: "October 2014 \u2013 April 2015"
+  organization: Dublin City University
   bullets:
-    - "Developed a new industrial method for the production of Donepezil (an Alzheimer’s medication)"
-    - "Primary experimentalist in development/optimisation of catalytic reaction for production of Donepezil"
-    - "Responsible for the synthesis of various feedstocks at industrial scale, as well as the final product"
-    - "Responsible for the design of an industrially scalable purification method for final products"
+    - Developed a new industrial production method for Donepezil and optimized key catalytic
+      reactions.
+    - Designed industrially scalable purification methods and synthesized feedstocks
+      at an industrial scale.
+- title: Research Consultant/Project Manager
+  date: "January 2020 \u2013 April 2020"
+  organization: University College Dublin
+  bullets:
+    - Facilitated project collaboration across European centres for the Fraunhofer Institute's
+      BioManu3 project.
+    - Administered workflows including research, meeting documentation, and defining
+      actionable milestones.
 - title: "Undergraduate Researcher"
   date: "February 2014 – May 2014"
   organization: "Dublin City University"
-  location: "Dublin, Ireland"
   bullets:
-    - "Aided in development of new class of drugs (“partial Calix[4]pyrroles”) to treat Multiple Sclerosis"
-    - "Contributed to the design and optimisation of lead compounds"
-    - "Responsible for designing synthetic pathways/methods for synthesising difficult to produce derivatives"
-    - "Responsible for synthesis of various derivatives to be tested as possible drug candidates"
-- title: "Research Consultant"
-  date: "January 2020 – April 2020"
-  organization: "University College Dublin"
-  location: "Dublin, Ireland"
-  bullets:
-    - "Aiding in project management for Fraunhofer Institute’s “BioManu3” project until its premature end due to Covid-19 pandemic"
-    - "Responsible for arranging and facilitating collaboration between numerous project centres across Europe"
-    - "Responsible for administrative project management roles such as research, drafting and documenting meetings, converting minutes to actionables and milestones, etc."
+    - "Aided the development of partial Calix[4]pyrrole drugs for Multiple Sclerosis by optimizing compounds."
+    - "Designed synthetic pathways and synthesized complex derivatives for testing as drug candidates."
+  tags:
+    - "undergrad"

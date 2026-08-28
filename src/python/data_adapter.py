@@ -15,6 +15,7 @@ class DataAdapter:
 
         for exp in dump.get("experience", []):
             exp["bullets"] = json.dumps(exp["bullets"])
+            exp["tags"] = json.dumps(exp.get("tags") or [])
         for proj in dump.get("projects", []):
             proj["technologies"] = json.dumps(proj["technologies"])
         for skill in dump.get("skills", []):
@@ -93,6 +94,8 @@ class DataAdapter:
         for exp in data_dump.get("experience", []):
             if isinstance(exp.get("bullets"), str):
                 exp["bullets"] = json.loads(exp["bullets"])
+            if isinstance(exp.get("tags"), str):
+                exp["tags"] = json.loads(exp["tags"])
         for proj in data_dump.get("projects", []):
             if isinstance(proj.get("technologies"), str):
                 proj["technologies"] = json.loads(proj["technologies"])

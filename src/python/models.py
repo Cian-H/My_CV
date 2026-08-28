@@ -15,6 +15,7 @@ class ProfileConfig(BaseModel):
 class PersonalInfo(BaseModel):
     name: str
     email: str
+    phone: str | None = None
     orcid: str
     links: list[Link] = []
     city: str | None = None
@@ -35,6 +36,7 @@ class Experience(BaseModel):
     organization: str
     location: str | None = None
     bullets: list[str]
+    tags: list[str] | None = None
 
 
 class Education(BaseModel):
