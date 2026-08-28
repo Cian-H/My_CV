@@ -38,14 +38,10 @@ def default_callback(ctx: typer.Context):
 
 
 @app.command(name="sync")
-def sync_cmd(
-    profile: str = typer.Option(
-        "general", help="Profile to use (e.g. academic, industry)"
-    ),
-):
+def sync_cmd():
     """Sync the structured CV content to the HDF5 lock file."""
-    print(f"Syncing data into cv_data.h5 using profile: {profile}...")
-    sync(profile)
+    print("Syncing data into cv_data.h5...")
+    sync()
 
 
 @app.command(name="build-static")
@@ -54,11 +50,15 @@ def generate_static_cmd(
     profile: str = typer.Option(
         "general", help="Profile to use (e.g. academic, industry)"
     ),
+    tags: str = typer.Option(
+        "", help="Comma-separated keywords/tags to filter by"
+    ),
 ):
-    """Generate the static PDF CV into the build/ directory. Use --exclude to comma-separate sections to exclude."""
+    """Generate the static PDF CV into the build/ directory. Use --exclude to comma-separate sections to exclude, and --tags to filter by keywords."""
     print(f"Generating static CV with profile {profile}...")
     excludes = [e.strip() for e in exclude.split(",")] if exclude else None
-    generate_static(excludes, profile)
+    filter_tags = [t.strip() for t in tags.split(",")] if tags else None
+    generate_static(excludes, profile, filter_tags)
 
 
 @app.command(name="build-frontend")

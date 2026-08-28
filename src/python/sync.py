@@ -14,7 +14,7 @@ def clean_empty_strings(obj):
     return obj
 
 
-def sync(profile: str = "industry"):
+def sync():
     raw_dir = Path("content")
 
     data_dict = {

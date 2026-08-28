@@ -845,7 +845,7 @@ wheels = [
 
 [[package]]
 name = "my-cv"
-version = "2026.8.64"
+version = "2026.8.67"
 source = { editable = "." }
 dependencies = [
     { name = "h5py" },

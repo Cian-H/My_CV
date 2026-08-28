@@ -3,7 +3,11 @@ import subprocess
 from src.python.data_adapter import DataAdapter
 
 
-def generate_static(excludes: list[str] | None = None, profile: str = "industry"):
+def generate_static(
+    excludes: list[str] | None = None,
+    profile: str = "industry",
+    filter_tags: list[str] | None = None,
+):
     adapter = DataAdapter("cv_data.h5")
     cv_data = adapter.load_cv()
 
@@ -21,6 +25,21 @@ def generate_static(excludes: list[str] | None = None, profile: str = "industry"
     if excludes:
         for exc in excludes:
             cv_dict.pop(exc, None)
+
+    if filter_tags:
+        filter_set = set(filter_tags)
+        tag_sections = {"skills", "education", "projects", "service"}
+        for sec in tag_sections:
+            if sec in cv_dict and isinstance(cv_dict[sec], list):
+                filtered_items = []
+                for item in cv_dict[sec]:
+                    if isinstance(item, dict):
+                        item_tags = set(item.get("tags") or [])
+                        item_techs = set(item.get("technologies") or [])
+                        all_item_tags = item_tags.union(item_techs)
+                        if filter_set.intersection(all_item_tags):
+                            filtered_items.append(item)
+                cv_dict[sec] = filtered_items
 
     json_path = "build/cv_data.json"
     with open(json_path, "w") as f:
@@ -50,6 +69,23 @@ def generate_static(excludes: list[str] | None = None, profile: str = "industry"
             check=False,
         )
         print("Fallback typst command line finished.")
+
+    # Check generated PDF page count
+    pdf_path = "build/My_CV_Generated.pdf"
+    try:
+        import os
+        import re
+        if os.path.exists(pdf_path):
+            with open(pdf_path, "rb") as pdf_file:
+                pdf_bytes = pdf_file.read()
+                # Typical Typst output format for page count
+                match = re.search(rb"/Type\s*/Pages\s*/Count\s*(\d+)", pdf_bytes)
+                if match:
+                    pages = int(match.group(1))
+                    if pages > 2:
+                        print(f"\n⚠️  WARNING: Generated CV is {pages} pages long. You might want to trim some content to stay within 2 pages!")
+    except Exception:
+        pass
 
 
 if __name__ == "__main__":
