@@ -1318,6 +1318,7 @@ document.addEventListener("DOMContentLoaded", () => {
         : "/api/cv.pdf?";
 
       const params = new URLSearchParams();
+      params.append("_t", Date.now().toString());
       if (excludes.length > 0) {
         params.append("exclude", excludes.join(","));
       }
